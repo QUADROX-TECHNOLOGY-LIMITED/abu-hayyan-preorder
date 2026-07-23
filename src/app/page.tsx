@@ -170,7 +170,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* Purchase Card - Now flowing naturally below hero without wasted space */}
+      {/* Purchase Card */}
       <div className="relative bg-white pb-16 lg:pb-24 px-6 z-20">
         <motion.div
           id="preorder"
@@ -214,20 +214,28 @@ export default function Home() {
             {/* CTA Block */}
             <div className="flex-1 w-full md:w-auto flex flex-col gap-3">
               <button className={`w-full rounded-full bg-stone-900 text-white font-bold py-4 lg:py-5 px-8 uppercase tracking-[0.2em] text-sm transition-all duration-300 hover:bg-amber-600 hover:shadow-[0_10px_25px_rgba(217,119,6,0.3)] active:scale-[0.98] ${focusRing}`}>
-                Secure Copy
+                Get your copy
               </button>
-              <button className="w-full flex items-center justify-center gap-2 text-stone-500 hover:text-stone-900 transition-colors text-[10px] sm:text-xs font-bold uppercase tracking-widest py-2">
+              
+              {/* Distinct OR divider */}
+              <div className="flex items-center justify-center gap-3 py-1 opacity-70">
+                <div className="w-10 h-px bg-stone-300"></div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-stone-500">OR</span>
+                <div className="w-10 h-px bg-stone-300"></div>
+              </div>
+
+              <button className="w-full flex items-center justify-center gap-2 text-stone-600 hover:text-stone-900 transition-colors text-[10px] sm:text-xs font-bold uppercase tracking-widest py-2">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-amber-500">
                   <path d="M12 3c-1.2 0-2.4.4-3.3 1.1-.9-.7-2.1-1.1-3.3-1.1-2.6 0-4.7 2.1-4.7 4.7 0 3.2 2.9 5.8 7.3 9.7l.7.6.7-.6c4.4-3.9 7.3-6.5 7.3-9.7 0-2.6-2.1-4.7-4.7-4.7z" />
                 </svg>
-                Sponsor Copies Instead
+                Buy books for others as Sadaqah
               </button>
             </div>
           </div>
         </motion.div>
       </div>
 
-      {/* 2. REFINED HIGHLIGHTS STRIP - Tighter padding to reduce wasted space */}
+      {/* 2. REFINED HIGHLIGHTS STRIP */}
       <section className="bg-stone-50 py-16 lg:py-20 border-t border-b border-stone-200">
         <motion.div
           initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={staggerContainer}
@@ -235,20 +243,20 @@ export default function Home() {
         >
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8">
             
-            {/* Highlight Cards - Made Arabic text huge and gold */}
-            <motion.div variants={revealUp} className="group bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl border border-stone-200 flex flex-col items-center text-center gap-3 transition-all duration-500 cursor-default">
+            {/* Highlight Cards - Styled like the launch ribbon box */}
+            <motion.div variants={revealUp} className="group bg-white p-8 rounded-3xl border-2 border-amber-200 shadow-xl shadow-amber-900/5 hover:shadow-2xl flex flex-col items-center text-center gap-3 transition-all duration-500 cursor-default">
               <span className="text-amber-600 text-4xl font-serif leading-none font-bold mb-2 group-hover:scale-110 transition-transform duration-500" dir="rtl" style={{ fontFamily: "'Amiri', 'Uthmani', serif" }}>العروض</span>
               <p className="text-stone-900 text-sm uppercase tracking-[0.15em] font-black">Classical Meter</p>
               <p className="text-stone-600 text-[11px] leading-relaxed font-medium">Composed strictly upon the traditional rules of Arabic Arud and Qawafi.</p>
             </motion.div>
 
-            <motion.div variants={revealUp} className="group bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl border border-stone-200 flex flex-col items-center text-center gap-3 transition-all duration-500 cursor-default">
+            <motion.div variants={revealUp} className="group bg-white p-8 rounded-3xl border-2 border-amber-200 shadow-xl shadow-amber-900/5 hover:shadow-2xl flex flex-col items-center text-center gap-3 transition-all duration-500 cursor-default">
               <span className="text-amber-600 text-4xl font-serif leading-none font-bold mb-2 group-hover:scale-110 transition-transform duration-500" dir="rtl" style={{ fontFamily: "'Amiri', 'Uthmani', serif" }}>إجازة</span>
               <p className="text-stone-900 text-sm uppercase tracking-[0.15em] font-black">Vetted by Scholars</p>
               <p className="text-stone-600 text-[11px] leading-relaxed font-medium">Reviewed by people of knowledge for accuracy in language and pure Islamic meaning.</p>
             </motion.div>
 
-            <motion.div variants={revealUp} className="group bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl border border-stone-200 flex flex-col items-center text-center gap-3 transition-all duration-500 cursor-default">
+            <motion.div variants={revealUp} className="group bg-white p-8 rounded-3xl border-2 border-amber-200 shadow-xl shadow-amber-900/5 hover:shadow-2xl flex flex-col items-center text-center gap-3 transition-all duration-500 cursor-default">
               <span className="text-amber-600 text-4xl font-serif leading-none font-bold mb-2 group-hover:scale-110 transition-transform duration-500" dir="rtl" style={{ fontFamily: "'Amiri', 'Uthmani', serif" }}>تراث</span>
               <p className="text-stone-900 text-sm uppercase tracking-[0.15em] font-black">Islamic Heritage</p>
               <p className="text-stone-600 text-[11px] leading-relaxed font-medium">A modern contribution to the rich, enduring legacy of classical Islamic literature.</p>
@@ -369,7 +377,7 @@ export default function Home() {
           href="mailto:dev@quadroxtech.cloud" 
           className="text-stone-400 hover:text-stone-900 transition-colors text-[10px] sm:text-xs tracking-[0.2em] uppercase font-bold text-center"
         >
-          &copy; QUADROX TECHNOLOGIES LIMITED 2026
+          &copy; QUADROX TECHNOLOGIES LIMITED
         </a>
       </footer>
 
