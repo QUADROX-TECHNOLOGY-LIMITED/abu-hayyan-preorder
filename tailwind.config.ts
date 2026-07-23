@@ -2,7 +2,6 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [
-    // This wildcard guarantees Tailwind scans every single file inside src
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
