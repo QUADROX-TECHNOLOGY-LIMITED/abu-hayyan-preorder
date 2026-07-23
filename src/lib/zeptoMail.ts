@@ -79,12 +79,16 @@ export async function sendReceiptEmail(
   `;
 
   try {
+    // 1. Safely handle the Zoho-enczapikey prefix so it never doubles up
+    const rawKey = String(process.env.ZEPTOMAIL_API_KEY).trim();
+    const authHeader = rawKey.startsWith('Zoho-enczapikey') ? rawKey : `Zoho-enczapikey ${rawKey}`;
+
     const response = await fetch('https://api.zeptomail.com/v1.1/email', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': `Zoho-enczapikey ${process.env.ZEPTOMAIL_API_KEY}`
+        'Authorization': authHeader
       },
       body: JSON.stringify({
         bounce_address: "bounce@bounce-zem.quadroxtech.cloud",
@@ -99,9 +103,8 @@ export async function sendReceiptEmail(
     });
 
     if (!response.ok) {
-      // Capture the exact rejection reason from ZeptoMail for debugging
       const errorText = await response.text();
-      console.error('ZeptoMail API Error Details:', errorText);
+      console.error('ZeptoMail API Error Details:', errorText || 'Empty response body');
       throw new Error(`ZeptoMail dispatch failed with status: ${response.status}`);
     }
     
