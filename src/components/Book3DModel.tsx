@@ -1,20 +1,34 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { useTexture, OrbitControls, Environment, Float } from '@react-three/drei';
+import { useTexture, OrbitControls, Environment, Float, useProgress } from '@react-three/drei';
 import * as THREE from 'three';
+
+// This invisible component tracks the loading progress of the 3D assets
+function LoaderTracker({ onLoaded }: { onLoaded: () => void }) {
+  const { progress } = useProgress();
+  
+  useEffect(() => {
+    if (progress === 100) {
+      // Add a tiny 500ms delay to ensure the browser has painted the canvas smoothly
+      const timer = setTimeout(() => onLoaded(), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [progress, onLoaded]);
+  
+  return null;
+}
 
 function Book() {
   const group = useRef<THREE.Group>(null);
   
-  // Load both front and back assets
   const textureFront = useTexture('/images/hayyan_mockup.jpeg');
-  const textureBack = useTexture('/images/hayyab_mockup_back.jpeg'); // Using exact filename provided
+  const textureBack = useTexture('/images/hayyab_mockup_back.jpeg');
 
   const coverMaterial = new THREE.MeshStandardMaterial({ 
     map: textureFront, 
-    roughness: 0.15, // Slightly glossier for a premium feel
+    roughness: 0.15, 
     metalness: 0.2
   });
   
@@ -30,17 +44,17 @@ function Book() {
   });
   
   const spineMaterial = new THREE.MeshStandardMaterial({ 
-    color: '#1a0f0a', // Extremely dark brown/black for contrast
+    color: '#1a0f0a',
     roughness: 0.6 
   });
 
   const materials = [
-    pagesMaterial, // Right side
-    spineMaterial, // Left side (Spine)
-    pagesMaterial, // Top
-    pagesMaterial, // Bottom
-    coverMaterial, // Front Cover
-    backMaterial,  // Back Cover
+    pagesMaterial, 
+    spineMaterial, 
+    pagesMaterial, 
+    pagesMaterial, 
+    coverMaterial, 
+    backMaterial,  
   ];
 
   return (
@@ -54,10 +68,11 @@ function Book() {
   );
 }
 
-export default function Book3DModel() {
+export default function Book3DModel({ onLoaded }: { onLoaded?: () => void }) {
   return (
     <div className="w-full h-full cursor-grab active:cursor-grabbing z-50">
       <Canvas camera={{ position: [0, 0, 6], fov: 45 }}>
+        {onLoaded && <LoaderTracker onLoaded={onLoaded} />}
         <ambientLight intensity={1.5} />
         <directionalLight position={[5, 10, 5]} intensity={2.5} />
         <Environment preset="city" />
