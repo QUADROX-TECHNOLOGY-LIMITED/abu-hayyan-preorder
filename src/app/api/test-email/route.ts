@@ -4,7 +4,7 @@ import { sendReceiptEmail } from '@/lib/zeptoMail';
 export async function GET(req: Request) {
   // Grab the email from the URL, or default to your Quadrox email
   const { searchParams } = new URL(req.url);
-  const targetEmail = searchParams.get('email') || 'dev@quadroxtech.cloud';
+  const targetEmail = searchParams.get('email') || 'tluminax@gmail.com';
 
   try {
     // 1. Fire the Pre-order Template
