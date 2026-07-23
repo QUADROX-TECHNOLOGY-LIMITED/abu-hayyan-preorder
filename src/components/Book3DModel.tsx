@@ -70,13 +70,36 @@ function Book() {
   );
 }
 
+// THE FIX: This custom component overrides the default scroll-blocking behavior
+function ScrollableControls() {
+  const controlsRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (controlsRef.current) {
+      // OrbitControls defaults to 'none', trapping all touch events.
+      // Forcing it to 'pan-y' tells mobile browsers to take over vertical swipes
+      // and scroll the page natively instead of spinning the book vertically.
+      controlsRef.current.domElement.style.touchAction = 'pan-y';
+    }
+  }, []);
+
+  return (
+    <OrbitControls
+      ref={controlsRef}
+      enableZoom={false}
+      enablePan={false}
+      // We restrict vertical rotation slightly so the interaction feels clean
+      // (They can swipe left/right to explore, but up/down will perfectly scroll the page)
+      minPolarAngle={Math.PI / 2.2}
+      maxPolarAngle={Math.PI / 1.8}
+    />
+  );
+}
+
 export default function Book3DModel({ onLoaded }: { onLoaded?: () => void }) {
   return (
     <div className="w-full h-full cursor-grab active:cursor-grabbing z-50">
-      {/* touchAction: 'pan-y' tells mobile browsers to allow vertical page scrolling 
-        even if the user touches the canvas element.
-      */}
-      <Canvas camera={{ position: [0, 0, 6], fov: 45 }} style={{ touchAction: 'pan-y' }}>
+      <Canvas camera={{ position: [0, 0, 6], fov: 45 }}>
         {onLoaded && <LoaderTracker onLoaded={onLoaded} />}
         
         <ambientLight intensity={2.5} />
@@ -85,12 +108,8 @@ export default function Book3DModel({ onLoaded }: { onLoaded?: () => void }) {
         
         <Book />
         
-        <OrbitControls 
-          enableZoom={false} 
-          enablePan={false}
-          minPolarAngle={Math.PI / 2.5}
-          maxPolarAngle={Math.PI / 1.5}
-        />
+        {/* We use our custom scrollable controls instead of standard OrbitControls */}
+        <ScrollableControls />
       </Canvas>
     </div>
   );
