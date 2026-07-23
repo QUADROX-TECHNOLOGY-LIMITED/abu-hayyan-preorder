@@ -1,26 +1,31 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #1a100c; /* Deep, rich brown from the cover */
+  --foreground: #fcf8f2; /* Soft off-white for highly readable text */
+  --gold-primary: #d4af37; /* Premium gold accent */
+  --gold-hover: #b5952f;
 }
 
 body {
-  background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--background);
+  font-family: system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom Gold Gradient for Text and Buttons */
+.gold-gradient-text {
+  background: linear-gradient(to right, #f9f295, #e0aa3e, #e0aa3e, #f9f295);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gold-gradient-bg {
+  background: linear-gradient(to right, #f9f295, #e0aa3e, #b8860b);
+  color: #1a100c;
+  font-weight: 700;
 }
