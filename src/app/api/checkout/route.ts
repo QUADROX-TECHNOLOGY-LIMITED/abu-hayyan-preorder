@@ -10,7 +10,6 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { mode, name, email, whatsapp, quantity, deliveryMode, state, city, address, nearestPark } = body;
 
-    // 1. Redis Rate Limiting Check
     const ip = req.headers.get('x-forwarded-for') || 'anonymous';
     const rateLimitKey = `rate_limit:checkout:${ip}`;
     const requests = await redis.incr(rateLimitKey);
@@ -19,14 +18,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ status: 'error', message: 'Too many requests. Slow down.' }, { status: 429 });
     }
 
-    // 2. Strict Server-Side Price Calculation (Delivery is paid separately by user)
     const basePrice = 2500;
     const totalAmount = quantity * basePrice;
-
-    // 3. Generate 6-Digit Order ID
     const orderId = String(Math.floor(100000 + Math.random() * 900000));
 
-    // 4. Request Dynamic Virtual Account from Flutterwave
+    // Force Wema Bank via bank_code: "035"
     const flwResponse = await fetch('https://api.flutterwave.com/v3/virtual-account-numbers', {
       method: 'POST',
       headers: {
@@ -36,8 +32,9 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         email: email || 'anonymous@abu-hayyan.com',
         is_permanent: false,
-        tx_ref: orderId, // 6-digit ID used as the transaction reference
-        amount: totalAmount
+        tx_ref: orderId, 
+        amount: totalAmount,
+        bank_code: "035" // <-- Forces Wema Bank (Universally Supported)
       })
     });
 
@@ -48,21 +45,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ status: 'error', message: 'Payment gateway unavailable. Try again.' }, { status: 500 });
     }
 
-    // 5. Store Pending Order in PostgreSQL via Prisma
     if (mode === 'preorder') {
       await prisma.order.create({
         data: {
           orderNumber: orderId,
           name: name || 'Guest',
-          email,
-          whatsapp,
-          quantity,
-          totalAmount,
-          deliveryMode,
-          state,
-          city,
-          address,
-          nearestPark,
+          email, whatsapp, quantity, totalAmount, deliveryMode, state, city, address, nearestPark,
           paymentStatus: 'PENDING',
           dvaReference: flwData.data.order_ref,
           dvaAccountNumber: flwData.data.account_number,
@@ -72,11 +60,9 @@ export async function POST(req: Request) {
     } else if (mode === 'sponsor') {
       await prisma.sponsor.create({
         data: {
-          orderNumber: orderId, // <-- NOW WE ARE SAVING IT HERE
+          orderNumber: orderId,
           name: name || 'Anonymous',
-          email,
-          quantity,
-          totalAmount,
+          email, quantity, totalAmount,
           paymentStatus: 'PENDING',
           dvaReference: flwData.data.order_ref,
           dvaAccountNumber: flwData.data.account_number,
@@ -85,7 +71,6 @@ export async function POST(req: Request) {
       });
     }
 
-    // 6. Return Account Details to Frontend Modal
     return NextResponse.json({
       status: 'success',
       accountDetails: {
