@@ -134,7 +134,7 @@ export default function Home() {
       </div>
 
       {/* 1. CINEMATIC HERO SECTION (WHITE) */}
-      <section className="relative min-h-[90svh] bg-white flex flex-col items-center justify-start pt-24 pb-16 lg:pb-12">
+      <section className="relative bg-white flex flex-col items-center justify-start pt-24 pb-12 lg:pb-16">
         {/* Subtle background glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80vw] h-[50vh] bg-amber-500/5 rounded-[100%] blur-[120px] pointer-events-none" />
 
@@ -168,14 +168,16 @@ export default function Home() {
             </motion.div>
           )}
         </motion.div>
+      </section>
 
-        {/* Purchase Card overlapping the sections - HIGH CONTRAST */}
+      {/* Purchase Card - Now flowing naturally below hero without wasted space */}
+      <div className="relative bg-white pb-16 lg:pb-24 px-6 z-20">
         <motion.div
           id="preorder"
           initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.5 }}
-          className="relative z-20 -mt-6 sm:-mt-10 lg:-mt-12 w-[92%] max-w-4xl mx-auto scroll-mt-24 translate-y-1/2"
+          className="w-full max-w-4xl mx-auto scroll-mt-24"
         >
-          <div className="bg-white border border-stone-200 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.15)] rounded-3xl overflow-hidden p-6 sm:p-8 lg:p-10 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="bg-white border border-stone-200 shadow-[0_20px_40px_-12px_rgba(0,0,0,0.1)] rounded-3xl overflow-hidden p-6 sm:p-8 lg:p-10 flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="flex-1 text-center md:text-left w-full">
               <p className="text-[10px] text-stone-500 uppercase tracking-[0.2em] mb-3 font-bold">Official Pre-Order</p>
               <div className="flex items-center justify-center md:justify-start gap-4">
@@ -223,41 +225,31 @@ export default function Home() {
             </div>
           </div>
         </motion.div>
-      </section>
+      </div>
 
-      {/* 2. REFINED HIGHLIGHTS STRIP (LIGHT GRAY BG TO SEPARATE) */}
-      <section className="bg-stone-50 pt-32 lg:pt-40 pb-16 lg:pb-24 border-b border-stone-200">
+      {/* 2. REFINED HIGHLIGHTS STRIP - Tighter padding to reduce wasted space */}
+      <section className="bg-stone-50 py-16 lg:py-20 border-t border-b border-stone-200">
         <motion.div
           initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={staggerContainer}
           className="px-6 lg:px-24 max-w-7xl mx-auto"
         >
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8">
             
-            {/* Highlight Cards with high contrast shadows */}
+            {/* Highlight Cards - Made Arabic text huge and gold */}
             <motion.div variants={revealUp} className="group bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl border border-stone-200 flex flex-col items-center text-center gap-3 transition-all duration-500 cursor-default">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-10 h-10 text-amber-500 mb-2 group-hover:scale-110 group-hover:text-amber-600 transition-transform duration-500">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.474 5.408l2.118 2.117m-.756-3.982L12.171 9.214a1.875 1.875 0 00-.54 1.144L11.5 13.5l3.142-.131a1.875 1.875 0 001.144-.54l5.67-5.67a1.875 1.875 0 000-2.651l-1.5-1.5a1.875 1.875 0 00-2.65 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 7.125L22.5 10m-3-2.875l-2.118-2.117M3 21l4.5-4.5" />
-              </svg>
-              <span className="text-stone-200 text-3xl font-serif leading-none font-bold" dir="rtl" style={{ fontFamily: "'Amiri', 'Uthmani', serif" }}>العروض</span>
+              <span className="text-amber-600 text-4xl font-serif leading-none font-bold mb-2 group-hover:scale-110 transition-transform duration-500" dir="rtl" style={{ fontFamily: "'Amiri', 'Uthmani', serif" }}>العروض</span>
               <p className="text-stone-900 text-sm uppercase tracking-[0.15em] font-black">Classical Meter</p>
               <p className="text-stone-600 text-[11px] leading-relaxed font-medium">Composed strictly upon the traditional rules of Arabic Arud and Qawafi.</p>
             </motion.div>
 
             <motion.div variants={revealUp} className="group bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl border border-stone-200 flex flex-col items-center text-center gap-3 transition-all duration-500 cursor-default">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-10 h-10 text-amber-500 mb-2 group-hover:scale-110 group-hover:text-amber-600 transition-transform duration-500">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-              </svg>
-              <span className="text-stone-200 text-3xl font-serif leading-none font-bold" dir="rtl" style={{ fontFamily: "'Amiri', 'Uthmani', serif" }}>إجازة</span>
+              <span className="text-amber-600 text-4xl font-serif leading-none font-bold mb-2 group-hover:scale-110 transition-transform duration-500" dir="rtl" style={{ fontFamily: "'Amiri', 'Uthmani', serif" }}>إجازة</span>
               <p className="text-stone-900 text-sm uppercase tracking-[0.15em] font-black">Vetted by Scholars</p>
               <p className="text-stone-600 text-[11px] leading-relaxed font-medium">Reviewed by people of knowledge for accuracy in language and pure Islamic meaning.</p>
             </motion.div>
 
             <motion.div variants={revealUp} className="group bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl border border-stone-200 flex flex-col items-center text-center gap-3 transition-all duration-500 cursor-default">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-10 h-10 text-amber-500 mb-2 group-hover:scale-110 group-hover:text-amber-600 transition-transform duration-500">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
-              </svg>
-              <span className="text-stone-200 text-3xl font-serif leading-none font-bold" dir="rtl" style={{ fontFamily: "'Amiri', 'Uthmani', serif" }}>تراث</span>
+              <span className="text-amber-600 text-4xl font-serif leading-none font-bold mb-2 group-hover:scale-110 transition-transform duration-500" dir="rtl" style={{ fontFamily: "'Amiri', 'Uthmani', serif" }}>تراث</span>
               <p className="text-stone-900 text-sm uppercase tracking-[0.15em] font-black">Islamic Heritage</p>
               <p className="text-stone-600 text-[11px] leading-relaxed font-medium">A modern contribution to the rich, enduring legacy of classical Islamic literature.</p>
             </motion.div>
@@ -265,7 +257,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* 3. THE LETTER FROM THE AUTHOR (WHITE BACKGROUND) */}
+      {/* 3. THE LETTER FROM THE AUTHOR */}
       <section className="bg-white py-20 lg:py-32 px-6 relative">
         <motion.div 
           initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={revealUp} 
@@ -292,7 +284,6 @@ export default function Home() {
               Every single poem within this book is meticulously crafted using traditional Arabic meter and rhyme. My goal was not simply to write, but to bring out the true, unadulterated beauty and musicality of the classical Arabic language.
             </p>
             
-            {/* Pop-out quote box for contrast */}
             <div className="pl-6 border-l-4 border-amber-500 py-4 my-10 bg-amber-50 rounded-r-xl pr-6 shadow-sm">
               <p className="italic text-stone-900 font-bold">
                 Alhamdulillah, this work was not published without rigorous review. The manuscript was thoroughly vetted by respected scholars who praised its rich vocabulary, the sweetness of its meanings, and its excellent eloquence.
@@ -307,7 +298,6 @@ export default function Home() {
               Finally, it would be my absolute honor to celebrate this milestone with you.
             </p>
 
-            {/* Launch Callout Box - HIGH CONTRAST */}
             <div className="my-12 p-8 border-2 border-amber-200 rounded-3xl bg-white shadow-xl shadow-amber-900/5 text-center flex flex-col items-center">
               <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-amber-600">
@@ -332,7 +322,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* 4. THE AUTHOR & CREDENTIALS (SOFT STONE BACKGROUND) */}
+      {/* 4. THE AUTHOR & CREDENTIALS */}
       <section className="bg-stone-50 py-20 lg:py-28 px-6 relative border-t border-stone-200">
         <motion.div 
           initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={revealUp} 
@@ -346,7 +336,6 @@ export default function Home() {
             <p>Passionate about sharing beneficial knowledge and preserving Islamic literary heritage, this debut collection reflects an extensive literary background and a deep, enduring love for classical Arabic poetry.</p>
           </div>
 
-          {/* Credential chips - HIGH CONTRAST */}
           <div className="flex flex-wrap gap-3 mt-12 justify-center max-w-3xl">
             <span className="text-[10px] uppercase tracking-wider text-stone-900 border-2 border-stone-200 px-4 py-2 rounded-full bg-white font-bold shadow-sm">Institute of Islamic Sciences &amp; Studies, Amuloko</span>
             <span className="text-[10px] uppercase tracking-wider text-stone-900 border-2 border-stone-200 px-4 py-2 rounded-full bg-white font-bold shadow-sm">B.A. English — University of Ibadan</span>
@@ -356,7 +345,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* 5. FINAL CTA (WHITE BACKGROUND) */}
+      {/* 5. FINAL CTA */}
       <motion.section
         initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={revealUp}
         className="relative bg-white px-6 py-20 lg:py-28 border-t border-stone-200 text-center overflow-hidden"
