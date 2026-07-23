@@ -135,7 +135,6 @@ export default function Home() {
 
       {/* 1. CINEMATIC HERO SECTION (WHITE) */}
       <section className="relative bg-white flex flex-col items-center justify-start pt-24 pb-12 lg:pb-16">
-        {/* Subtle background glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80vw] h-[50vh] bg-amber-500/5 rounded-[100%] blur-[120px] pointer-events-none" />
 
         <div className="absolute top-[12%] lg:top-[16%] w-full text-center z-0 pointer-events-none select-none overflow-hidden">
@@ -145,11 +144,12 @@ export default function Home() {
         </div>
 
         <motion.div initial="hidden" animate="visible" variants={revealUp} className="z-10 mt-6 lg:mt-10 flex flex-col items-center gap-4 text-center px-4">
-          <h2 className="text-5xl sm:text-6xl lg:text-7xl text-amber-600 drop-shadow-sm font-bold" dir="rtl" style={{ fontFamily: "'Amiri', 'Uthmani', 'Traditional Arabic', serif", lineHeight: '1.4' }}>
-            الجمان من بدائع أبي حيان
+          <h2 className="flex flex-col items-center text-amber-600 drop-shadow-sm font-bold" dir="rtl" style={{ fontFamily: "'Amiri', 'Uthmani', 'Traditional Arabic', serif", lineHeight: '1.2' }}>
+            <span className="text-6xl sm:text-7xl lg:text-8xl">الجمان</span>
+            <span className="text-3xl sm:text-5xl lg:text-6xl mt-2 sm:mt-4 text-amber-600/90">من بدائع أبي حيان</span>
           </h2>
-          <div className="flex flex-col items-center">
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-serif text-stone-900 uppercase tracking-[0.15em] leading-none mt-2 font-black">Pearls</h1>
+          <div className="flex flex-col items-center mt-4">
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-serif text-stone-900 uppercase tracking-[0.15em] leading-none font-black">Pearls</h1>
             <p className="text-stone-500 text-[10px] sm:text-xs lg:text-sm uppercase tracking-[0.3em] font-bold mt-4 text-center max-w-[80vw]">From the Masterpieces of Abu Hayyan</p>
           </div>
         </motion.div>
@@ -164,7 +164,7 @@ export default function Home() {
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 animate-pulse">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.834.166l-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.243l-1.59-1.59" />
               </svg>
-              <span className="text-[9px] uppercase tracking-widest font-bold">Drag to explore</span>
+              <span className="text-[9px] uppercase tracking-widest font-bold">Drag to rotate</span>
             </motion.div>
           )}
         </motion.div>
@@ -191,7 +191,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="hidden md:block w-px h-20 bg-stone-200" />
+            <div className="hidden md:block w-px h-28 bg-stone-200" />
             
             {/* Countdown Block */}
             <div className="flex-1 text-center w-full">
@@ -211,24 +211,23 @@ export default function Home() {
               )}
             </div>
             
-            {/* CTA Block */}
+            {/* CTA Block with Secondary Button */}
             <div className="flex-1 w-full md:w-auto flex flex-col gap-3">
-              <button className={`w-full rounded-full bg-stone-900 text-white font-bold py-4 lg:py-5 px-8 uppercase tracking-[0.2em] text-sm transition-all duration-300 hover:bg-amber-600 hover:shadow-[0_10px_25px_rgba(217,119,6,0.3)] active:scale-[0.98] ${focusRing}`}>
+              <button className={`w-full rounded-full bg-stone-900 text-white font-bold py-4 px-8 uppercase tracking-[0.15em] text-sm transition-all duration-300 hover:bg-amber-600 hover:shadow-[0_10px_25px_rgba(217,119,6,0.3)] active:scale-[0.98] ${focusRing}`}>
                 Get your copy
               </button>
               
-              {/* Distinct OR divider */}
-              <div className="flex items-center justify-center gap-3 py-1 opacity-70">
+              <div className="flex items-center justify-center gap-3 py-1.5 opacity-70">
                 <div className="w-10 h-px bg-stone-300"></div>
                 <span className="text-[10px] font-black uppercase tracking-widest text-stone-500">OR</span>
                 <div className="w-10 h-px bg-stone-300"></div>
               </div>
 
-              <button className="w-full flex items-center justify-center gap-2 text-stone-600 hover:text-stone-900 transition-colors text-[10px] sm:text-xs font-bold uppercase tracking-widest py-2">
+              <button className={`w-full rounded-full bg-white border-2 border-stone-200 text-stone-700 font-bold py-3 px-6 uppercase tracking-[0.1em] text-[10px] sm:text-xs transition-all duration-300 hover:bg-stone-50 hover:border-amber-300 hover:text-stone-900 flex items-center justify-center gap-2 shadow-sm ${focusRing}`}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-amber-500">
                   <path d="M12 3c-1.2 0-2.4.4-3.3 1.1-.9-.7-2.1-1.1-3.3-1.1-2.6 0-4.7 2.1-4.7 4.7 0 3.2 2.9 5.8 7.3 9.7l.7.6.7-.6c4.4-3.9 7.3-6.5 7.3-9.7 0-2.6-2.1-4.7-4.7-4.7z" />
                 </svg>
-                Buy books for others as Sadaqah
+                Buy for others as Sadaqah
               </button>
             </div>
           </div>
@@ -243,7 +242,6 @@ export default function Home() {
         >
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8">
             
-            {/* Highlight Cards - Styled like the launch ribbon box */}
             <motion.div variants={revealUp} className="group bg-white p-8 rounded-3xl border-2 border-amber-200 shadow-xl shadow-amber-900/5 hover:shadow-2xl flex flex-col items-center text-center gap-3 transition-all duration-500 cursor-default">
               <span className="text-amber-600 text-4xl font-serif leading-none font-bold mb-2 group-hover:scale-110 transition-transform duration-500" dir="rtl" style={{ fontFamily: "'Amiri', 'Uthmani', serif" }}>العروض</span>
               <p className="text-stone-900 text-sm uppercase tracking-[0.15em] font-black">Classical Meter</p>
@@ -366,7 +364,7 @@ export default function Home() {
             onClick={scrollToPreorder}
             className={`mt-6 rounded-full bg-stone-900 text-white font-bold py-5 px-12 uppercase tracking-[0.2em] text-sm hover:bg-amber-600 hover:shadow-[0_15px_30px_rgba(217,119,6,0.3)] transition-all duration-300 ${focusRing}`}
           >
-            Secure Copy — ₦2,500
+            Get your copy — ₦2,500
           </button>
         </div>
       </motion.section>
@@ -377,7 +375,7 @@ export default function Home() {
           href="mailto:dev@quadroxtech.cloud" 
           className="text-stone-400 hover:text-stone-900 transition-colors text-[10px] sm:text-xs tracking-[0.2em] uppercase font-bold text-center"
         >
-          &copy; QUADROX TECHNOLOGIES LIMITED
+          &copy; QUADROX TECHNOLOGIES LIMITED 2026
         </a>
       </footer>
 
