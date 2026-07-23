@@ -41,19 +41,21 @@ export async function POST(req: Request) {
           where: { id: order.id },
           data: { paymentStatus: 'SUCCESS' }
         });
-        customerName = order.name;
-        customerEmail = order.email;
+        // Handle potential nulls safely
+        customerName = order.name || 'Guest';
+        customerEmail = order.email || '';
       } else {
         // Check Sponsors if not found in Orders
-        const sponsor = await prisma.sponsor.findFirst({ where: { orderNumber: txRef } }); // Ensure schema maps orderNumber to Sponsor
+        const sponsor = await prisma.sponsor.findFirst({ where: { orderNumber: txRef } }); 
         if (sponsor) {
           mode = 'sponsor';
           await prisma.sponsor.update({
             where: { id: sponsor.id },
             data: { paymentStatus: 'SUCCESS' }
           });
-          customerName = sponsor.name;
-          customerEmail = sponsor.email;
+          // Handle potential nulls safely
+          customerName = sponsor.name || 'Anonymous';
+          customerEmail = sponsor.email || '';
         } else {
           return NextResponse.json({ message: 'Order not found' }, { status: 404 });
         }
