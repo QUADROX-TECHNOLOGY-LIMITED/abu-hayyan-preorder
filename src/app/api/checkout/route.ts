@@ -10,22 +10,21 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { mode, name, email, whatsapp, quantity, deliveryMode, state, city, address, nearestPark } = body;
 
-    // 1. Redis Rate Limiting Check (Prevent API Abuse)
+    // 1. Redis Rate Limiting Check
     const ip = req.headers.get('x-forwarded-for') || 'anonymous';
     const rateLimitKey = `rate_limit:checkout:${ip}`;
     const requests = await redis.incr(rateLimitKey);
-    if (requests === 1) await redis.expire(rateLimitKey, 60); // Max requests per minute
+    if (requests === 1) await redis.expire(rateLimitKey, 60); 
     if (requests > 5) {
       return NextResponse.json({ status: 'error', message: 'Too many requests. Slow down.' }, { status: 429 });
     }
 
-    // 2. Strict Server-Side Price Calculation
+    // 2. Strict Server-Side Price Calculation (Delivery is paid separately by user)
     const basePrice = 2500;
-    const deliveryFee = deliveryMode === 'home_delivery' ? 3000 : 0;
-    const totalAmount = (quantity * basePrice) + deliveryFee;
+    const totalAmount = quantity * basePrice;
 
-    // 3. Generate Unique Transaction Reference
-    const tx_ref = `AH-PRE-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    // 3. Generate 6-Digit Order ID
+    const orderId = String(Math.floor(100000 + Math.random() * 900000));
 
     // 4. Request Dynamic Virtual Account from Flutterwave
     const flwResponse = await fetch('https://api.flutterwave.com/v3/virtual-account-numbers', {
@@ -37,8 +36,7 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         email: email || 'anonymous@abu-hayyan.com',
         is_permanent: false,
-        bvn: "", // Omit if not strictly required by your compliance tier
-        tx_ref: tx_ref,
+        tx_ref: orderId, // 6-digit ID used as the transaction reference
         amount: totalAmount
       })
     });
@@ -54,7 +52,7 @@ export async function POST(req: Request) {
     if (mode === 'preorder') {
       await prisma.order.create({
         data: {
-          orderNumber: tx_ref,
+          orderNumber: orderId,
           name: name || 'Guest',
           email,
           whatsapp,
@@ -75,6 +73,7 @@ export async function POST(req: Request) {
       await prisma.sponsor.create({
         data: {
           name: name || 'Anonymous',
+          email,
           quantity,
           totalAmount,
           paymentStatus: 'PENDING',
@@ -89,10 +88,12 @@ export async function POST(req: Request) {
     return NextResponse.json({
       status: 'success',
       accountDetails: {
+        account_name: "ABU HAYYAN SCHOOL OF SKILLS AND DEEN",
         account_number: flwData.data.account_number,
         bank_name: flwData.data.bank_name,
-        amount: flwData.data.amount,
-        expiry: flwData.data.expiry_date
+        amount: totalAmount,
+        expiry_date: "1 Hour",
+        order_id: orderId
       }
     });
 
