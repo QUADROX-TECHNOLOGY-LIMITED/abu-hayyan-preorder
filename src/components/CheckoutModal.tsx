@@ -6,7 +6,68 @@ import { nigeriaStates } from '@/lib/nigeriaData';
 
 type ModalMode = 'preorder' | 'sponsor' | null;
 
-// Custom Searchable Dropdown Component
+// Custom Dropdown for Delivery Method (Matches SearchableSelect)
+function DropdownSelect({ 
+  options, 
+  value, 
+  onChange 
+}: { 
+  options: { label: string, value: string }[]; 
+  value: string; 
+  onChange: (val: string) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const selectedOption = options.find(opt => opt.value === value);
+
+  return (
+    <div ref={wrapperRef} className="relative w-full">
+      <div 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full bg-white border-2 border-stone-200 rounded-xl px-4 py-3.5 text-stone-900 font-medium flex justify-between items-center cursor-pointer hover:border-amber-500 transition-colors"
+      >
+        <span className={value ? "text-stone-900" : "text-stone-400"}>{selectedOption?.label || "Select option..."}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+        </svg>
+      </div>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+            className="absolute z-50 w-full mt-2 bg-white border-2 border-stone-200 rounded-xl shadow-2xl overflow-hidden"
+          >
+            <ul className="max-h-48 overflow-y-auto">
+              {options.map(opt => (
+                <li 
+                  key={opt.value} 
+                  onClick={() => { onChange(opt.value); setIsOpen(false); }}
+                  className="px-4 py-3 hover:bg-amber-50 cursor-pointer text-stone-700 text-sm font-medium border-b border-stone-50 last:border-0"
+                >
+                  {opt.label}
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// Custom Searchable Dropdown for States and Cities
 function SearchableSelect({ 
   options, 
   placeholder, 
@@ -94,8 +155,8 @@ export default function CheckoutModal({ mode, onClose }: { mode: ModalMode; onCl
   });
 
   const basePrice = 2500;
-  const deliveryFee = formData.deliveryMode === 'home_delivery' ? 3000 : 0;
-  const totalAmount = (formData.quantity * basePrice) + (mode === 'preorder' ? deliveryFee : 0);
+  // We no longer add delivery fees to the checkout amount, as it is strictly on them.
+  const totalAmount = formData.quantity * basePrice; 
 
   const availableStates = Object.keys(nigeriaStates);
   const availableCities = formData.state ? nigeriaStates[formData.state] || [] : [];
@@ -103,14 +164,22 @@ export default function CheckoutModal({ mode, onClose }: { mode: ModalMode; onCl
   const handleProcessCheckout = async () => {
     setLoading(true);
     try {
-      // Simulate API call for now
-      setTimeout(() => {
-        setPaymentData({ bank_name: "Wema Bank", account_number: "8273649102", amount: totalAmount, expiry_date: "30 Mins" });
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, mode, totalAmount })
+      });
+      const data = await res.json();
+      
+      if (data.status === 'success') {
+        setPaymentData(data.accountDetails);
         setStep(3);
-        setLoading(false);
-      }, 1500);
+      } else {
+        alert(data.message || 'An error occurred. Please try again.');
+      }
     } catch (error) {
-      alert('Network error. Please try again.');
+      alert('Network error. Please ensure you have a stable connection.');
+    } finally {
       setLoading(false);
     }
   };
@@ -141,7 +210,7 @@ export default function CheckoutModal({ mode, onClose }: { mode: ModalMode; onCl
             {/* Scrollable Content Area */}
             <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-8 bg-white">
               
-              {/* SPONSORSHIP FLOW (Streamlined) */}
+              {/* SPONSORSHIP FLOW */}
               {mode === 'sponsor' && step === 1 && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
                   <div>
@@ -200,17 +269,27 @@ export default function CheckoutModal({ mode, onClose }: { mode: ModalMode; onCl
                 </motion.div>
               )}
 
-              {/* PRE-ORDER FLOW - STEP 2 (Delivery with Searchable Dropdowns) */}
+              {/* PRE-ORDER FLOW - STEP 2 */}
               {mode === 'preorder' && step === 2 && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
                   <div>
                     <label className="block text-xs font-black text-stone-900 uppercase tracking-widest mb-2">Delivery Method</label>
-                    <select className={inputStyle} onChange={(e) => setFormData({...formData, deliveryMode: e.target.value})}>
-                      <option value="launch_pickup">Pickup at Launch Ceremony (Free)</option>
-                      <option value="home_delivery">Home Delivery (Fees Apply)</option>
-                    </select>
-                    {formData.deliveryMode === 'launch_pickup' && (
-                      <p className="text-[10px] text-amber-600 font-bold mt-2 bg-amber-50 p-2 rounded-md border border-amber-100 uppercase tracking-wider">*If you miss the launch, standard delivery fees will apply.</p>
+                    <DropdownSelect 
+                      options={[
+                        { label: 'Pickup at Launch Ceremony', value: 'launch_pickup' },
+                        { label: 'Home Delivery', value: 'home_delivery' }
+                      ]} 
+                      value={formData.deliveryMode} 
+                      onChange={(val) => setFormData({...formData, deliveryMode: val})} 
+                    />
+                    {formData.deliveryMode === 'launch_pickup' ? (
+                      <p className="text-[10px] text-amber-600 font-bold mt-2 bg-amber-50 p-2 rounded-md border border-amber-100 uppercase tracking-wider">
+                        *If you don't show up for pickup, the delivery fee is on you ooo.
+                      </p>
+                    ) : (
+                      <p className="text-[10px] text-amber-600 font-bold mt-2 bg-amber-50 p-2 rounded-md border border-amber-100 uppercase tracking-wider">
+                        *Delivery fee is on you ooo.
+                      </p>
                     )}
                   </div>
 
