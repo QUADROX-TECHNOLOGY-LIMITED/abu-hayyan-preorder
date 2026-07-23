@@ -76,6 +76,7 @@ export default function CheckoutModal({ mode, onClose }: { mode: ModalMode; onCl
   const [copied, setCopied] = useState(false);
   
   const [payTime, setPayTime] = useState({ m: 60, s: 0 });
+  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const [formData, setFormData] = useState({
     name: '', email: '', whatsapp: '', quantity: 1,
@@ -100,7 +101,14 @@ export default function CheckoutModal({ mode, onClose }: { mode: ModalMode; onCl
     setFormData({...formData, whatsapp: val});
   };
 
-  // --- API GENERATION SIMULATION ---
+  // Cleanup polling if component unmounts unexpectedly
+  useEffect(() => {
+    return () => {
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+    };
+  }, []);
+
+  // --- API GENERATION (FLUTTERWAVE) ---
   const handleProcessCheckout = async () => {
     setStep('generating');
     try {
@@ -108,16 +116,22 @@ export default function CheckoutModal({ mode, onClose }: { mode: ModalMode; onCl
       const expiryTime = Date.now() + (60 * 60 * 1000);
       localStorage.setItem('quadrox_pay_expiry', expiryTime.toString());
 
-      setTimeout(() => {
-        setPaymentData({ 
-          account_name: "ABU HAYYAN PREORDER",
-          bank_name: "Wema Bank", 
-          account_number: "8273649102", 
-          amount: totalAmount,
-          order_id: `AH-PRE-${Math.floor(1000 + Math.random() * 9000)}`
-        });
-        setStep(3);
-      }, 3500); 
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, mode, totalAmount })
+      });
+      const data = await res.json();
+      
+      if (data.status === 'success') {
+        setPaymentData(data.accountDetails);
+        setTimeout(() => {
+          setStep(3);
+        }, 1500); // Slight delay so the user enjoys the animation
+      } else {
+        alert(data.message || 'An error occurred. Please try again.');
+        setStep(mode === 'preorder' ? 2 : 1);
+      }
     } catch (error) {
       alert('Network error. Please try again.');
       setStep(mode === 'preorder' ? 2 : 1);
@@ -130,7 +144,7 @@ export default function CheckoutModal({ mode, onClose }: { mode: ModalMode; onCl
       const interval = setInterval(() => {
         const storedExpiry = localStorage.getItem('quadrox_pay_expiry');
         if (storedExpiry) {
-          const distance = parseInt(storedExpiry) - Date.now(); // Calculates real-time distance
+          const distance = parseInt(storedExpiry) - Date.now(); 
           
           if (distance <= 0) {
             // TIME IS UP: Wipe session and kick them out immediately
@@ -138,7 +152,7 @@ export default function CheckoutModal({ mode, onClose }: { mode: ModalMode; onCl
             setPayTime({ m: 0, s: 0 });
             localStorage.removeItem('quadrox_pay_expiry');
             alert('The 1-hour payment window has expired. Please initiate a new order.');
-            onClose(); // Forcefully closes the modal
+            onClose(); 
           } else {
             setPayTime({
               m: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
@@ -159,13 +173,32 @@ export default function CheckoutModal({ mode, onClose }: { mode: ModalMode; onCl
     }
   };
 
-  // --- VERIFICATION SIMULATION ---
+  // --- REAL VERIFICATION POLLING ---
   const handleVerification = () => {
     setStep('verifying');
-    setTimeout(() => {
-      setStep(4); 
-      localStorage.removeItem('quadrox_pay_expiry'); 
-    }, 4000);
+    
+    pollIntervalRef.current = setInterval(async () => {
+      try {
+        const res = await fetch('/api/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            accountNumber: paymentData.account_number, 
+            mode 
+          })
+        });
+        
+        const data = await res.json();
+        
+        if (data.isPaid) {
+          if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+          setStep(4); // Success Screen
+          localStorage.removeItem('quadrox_pay_expiry'); 
+        }
+      } catch (error) {
+        console.error("Polling check failed", error);
+      }
+    }, 5000); // Check every 5 seconds
   };
 
   const inputStyle = "w-full bg-white border-2 border-stone-200 rounded-xl px-4 py-3.5 text-stone-900 font-medium placeholder-stone-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors";
