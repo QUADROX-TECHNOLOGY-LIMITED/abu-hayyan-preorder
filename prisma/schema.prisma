@@ -47,6 +47,7 @@ model Order {
 // Isolated table for the Sponsorship workflow
 model Sponsor {
   id               String    @id @default(cuid())
+  orderNumber      String   // <-- ADD THIS LINE
   name             String?   // Nullable for anonymous sponsors
   email            String   // <-- ADD THIS LINE
   quantity         Int
