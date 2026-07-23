@@ -72,6 +72,7 @@ export async function POST(req: Request) {
     } else if (mode === 'sponsor') {
       await prisma.sponsor.create({
         data: {
+          orderNumber: orderId, // <-- NOW WE ARE SAVING IT HERE
           name: name || 'Anonymous',
           email,
           quantity,
@@ -88,7 +89,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       status: 'success',
       accountDetails: {
-        account_name: "ABU HAYYAN SCHOOL OF SKILLS AND DEEN",
+        account_name: "ABU HAYYAN SCHOOL OF SKILLS",
         account_number: flwData.data.account_number,
         bank_name: flwData.data.bank_name,
         amount: totalAmount,
