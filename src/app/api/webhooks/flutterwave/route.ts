@@ -8,44 +8,48 @@ const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
 
 export async function POST(req: Request) {
   try {
-    // 1. Verify Webhook Signature
-    const signature = req.headers.get('verif-hash');
-    if (!signature || signature !== process.env.FLUTTERWAVE_WEBHOOK_SECRET) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    }
-
     const payload = await req.json();
 
-    // We only care about successful transfers
-    if (payload.event === 'charge.completed' && payload.data.status === 'successful') {
-      const txRef = payload.data.tx_ref; // This is our 6-digit Order ID
+    // 1. Acknowledge non-payment webhooks immediately so FLW doesn't spam us
+    if (payload.event !== 'charge.completed') {
+       return NextResponse.json({ status: 'ignored' }, { status: 200 });
+    }
 
-      // 2. Redis Lock (Idempotency) to prevent duplicate processing
-      const lockKey = `webhook_lock:${txRef}`;
-      const isLocked = await redis.set(lockKey, 'locked', 'EX', 300, 'NX');
-      
-      if (!isLocked) {
-        // Webhook is already being processed, return 200 to acknowledge receipt
-        return NextResponse.json({ status: 'success' }, { status: 200 });
+    const transactionId = payload.data.id;
+    const txRef = payload.data.tx_ref; 
+
+    // 2. Redis Lock to prevent duplicate processing
+    const lockKey = `webhook_lock:${txRef}`;
+    const isLocked = await redis.set(lockKey, 'locked', 'EX', 300, 'NX');
+    if (!isLocked) return NextResponse.json({ status: 'success' }, { status: 200 });
+
+    // 3. SECURE VERIFICATION: Ping Flutterwave Directly to ensure it's not a hacker
+    const verifyRes = await fetch(`https://api.flutterwave.com/v3/transactions/${transactionId}/verify`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${process.env.FLUTTERWAVE_SECRET_KEY}`,
+        'Content-Type': 'application/json'
       }
+    });
+    
+    const verifyData = await verifyRes.json();
 
-      // 3. Find the Order or Sponsor record
+    // 4. Process only if Flutterwave servers confirm it's real
+    if (verifyData.status === 'success' && verifyData.data.status === 'successful') {
+      
       let order = await prisma.order.findFirst({ where: { orderNumber: txRef } });
       let mode: 'preorder' | 'sponsor' = 'preorder';
       let customerName = '';
       let customerEmail = '';
 
       if (order) {
-        // Update Preorder
         await prisma.order.update({
           where: { id: order.id },
           data: { paymentStatus: 'SUCCESS' }
         });
-        // Handle potential nulls safely
         customerName = order.name || 'Guest';
         customerEmail = order.email || '';
       } else {
-        // Check Sponsors if not found in Orders
         const sponsor = await prisma.sponsor.findFirst({ where: { orderNumber: txRef } }); 
         if (sponsor) {
           mode = 'sponsor';
@@ -53,7 +57,6 @@ export async function POST(req: Request) {
             where: { id: sponsor.id },
             data: { paymentStatus: 'SUCCESS' }
           });
-          // Handle potential nulls safely
           customerName = sponsor.name || 'Anonymous';
           customerEmail = sponsor.email || '';
         } else {
@@ -61,7 +64,7 @@ export async function POST(req: Request) {
         }
       }
 
-      // 4. Dispatch ZeptoMail Receipt
+      // 5. Dispatch ZeptoMail Receipt
       if (customerEmail) {
         await sendReceiptEmail(customerEmail, customerName, txRef, mode);
       }
