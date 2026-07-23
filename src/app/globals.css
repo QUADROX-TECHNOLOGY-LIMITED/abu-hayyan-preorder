@@ -3,20 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --background: #140b08;
-  --foreground: #fcf8f2;
+  /* Forces Android and Chrome to never apply forced dark mode */
+  color-scheme: light only;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: system-ui, -apple-system, sans-serif;
-  overflow-x: hidden;
-}
-
-.gold-gradient-text {
-  background: linear-gradient(to right, #f9f295, #d4af37, #b8860b);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+html, body {
+  background-color: #ffffff;
+  color: #1c1917; /* stone-900 */
 }
