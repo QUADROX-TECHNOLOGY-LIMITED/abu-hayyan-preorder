@@ -73,10 +73,11 @@ export default function Home() {
           <motion.div
             animate={{ x: [30, -30, 30] }}
             transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-            className="text-white/80 text-4xl sm:text-5xl font-serif"
+            className="text-white/90 text-4xl sm:text-5xl"
             dir="rtl"
+            style={{ fontFamily: "'Amiri', 'Uthmani', 'Traditional Arabic', serif", lineHeight: '1.5' }}
           >
-            أبي حيان
+            أبو حيان
           </motion.div>
         </div>
       </div>
@@ -105,15 +106,16 @@ export default function Home() {
         </div>
       </motion.header>
 
-      {/* FLOATING SPONSOR SEAL (Hidden on Mobile to prevent conflict) */}
+      {/* FLOATING SPONSOR SEAL (Hidden on Mobile) */}
       <motion.button
         animate={shouldReduceMotion ? {} : { y: [0, -8, 0], rotate: [0, -2, 2, -2, 0] }}
         transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
         className={`hidden lg:flex fixed bottom-8 right-12 z-50 bg-gradient-to-r from-gold-400 to-gold-600 text-book-900 px-5 py-3 rounded-full shadow-[0_10px_30px_rgba(212,175,55,0.4)] hover:scale-105 transition-transform items-center gap-3 group ${focusRing}`}
         aria-label="Sponsor copies for others"
       >
+        {/* Hand receiving/giving icon */}
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 animate-pulse">
-          <path d="M9.375 3a1.875 1.875 0 0 0 0 3.75h1.875v4.5H3.375A1.875 1.875 0 0 1 1.5 9.375v-.75c0-1.036.84-1.875 1.875-1.875h3.193A3.375 3.375 0 0 1 12 2.753a3.375 3.375 0 0 1 5.432 3.997h3.193c1.035 0 1.875.84 1.875 1.875v.75c0 1.036-.84 1.875-1.875 1.875H12.75v-4.5h1.875a1.875 1.875 0 1 0-1.875-1.875V6.75h-1.5V4.875C11.25 3.839 10.41 3 9.375 3ZM11.25 12.75H3v6.75a2.25 2.25 0 0 0 2.25 2.25h6v-9ZM12.75 12.75v9h6a2.25 2.25 0 0 0 2.25-2.25v-6.75h-8.25Z" />
+          <path d="M12 3c-1.2 0-2.4.4-3.3 1.1-.9-.7-2.1-1.1-3.3-1.1-2.6 0-4.7 2.1-4.7 4.7 0 3.2 2.9 5.8 7.3 9.7l.7.6.7-.6c4.4-3.9 7.3-6.5 7.3-9.7 0-2.6-2.1-4.7-4.7-4.7z" />
         </svg>
         <span className="text-xs font-black uppercase tracking-widest whitespace-nowrap">
           Sponsor Copies
@@ -155,9 +157,15 @@ export default function Home() {
 
         {/* Official Book Title Intro */}
         <motion.div initial="hidden" animate="visible" variants={revealUp} className="z-10 mt-6 lg:mt-10 flex flex-col items-center gap-4 text-center px-4">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-gold-500 drop-shadow-md" dir="rtl">الجمان من بدائع أبي حيان</h2>
+          <h2 
+            className="text-4xl sm:text-5xl lg:text-6xl text-gold-500 drop-shadow-md" 
+            dir="rtl"
+            style={{ fontFamily: "'Amiri', 'Uthmani', 'Traditional Arabic', serif", lineHeight: '1.4' }}
+          >
+            الجمان من بدائع أبي حيان
+          </h2>
           <div className="flex flex-col items-center">
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-serif text-white uppercase tracking-[0.15em] leading-none drop-shadow-lg">Pearls</h1>
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-serif text-white uppercase tracking-[0.15em] leading-none drop-shadow-lg mt-2">Pearls</h1>
             <p className="text-gray-300 text-[10px] sm:text-xs lg:text-sm uppercase tracking-[0.3em] font-light mt-3 text-center max-w-[80vw]">From the Masterpieces of Abu Hayyan</p>
           </div>
         </motion.div>
@@ -167,9 +175,22 @@ export default function Home() {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.5, ease: "easeOut" }}
-          className="relative z-10 w-full max-w-5xl h-[45vh] sm:h-[55vh] lg:h-[60vh] mt-4 lg:mt-8 cursor-grab active:cursor-grabbing"
+          className="relative z-10 w-full max-w-5xl h-[45vh] sm:h-[55vh] lg:h-[60vh] mt-4 lg:mt-6 cursor-grab active:cursor-grabbing flex flex-col items-center justify-center"
         >
           <Book3DModel onLoaded={() => setModelLoaded(true)} />
+          
+          {/* Subtle Drag Hint */}
+          {modelLoaded && (
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2 }}
+              className="absolute bottom-0 flex items-center gap-2 text-gold-500/50 pointer-events-none"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 animate-pulse">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.834.166l-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.243l-1.59-1.59" />
+              </svg>
+              <span className="text-[9px] uppercase tracking-widest font-bold">Drag to explore</span>
+            </motion.div>
+          )}
         </motion.div>
 
         {/* Purchase Card */}
@@ -178,11 +199,11 @@ export default function Home() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="relative z-20 -mt-10 sm:-mt-16 lg:-mt-20 w-[92%] max-w-4xl mx-auto scroll-mt-24"
+          className="relative z-20 -mt-6 sm:-mt-10 lg:-mt-12 w-[92%] max-w-4xl mx-auto scroll-mt-24"
         >
           <div className="bg-book-800/60 backdrop-blur-2xl border border-gold-500/20 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] rounded-3xl overflow-hidden p-6 sm:p-8 lg:p-10 flex flex-col md:flex-row items-center justify-between gap-8">
 
-            {/* Price Block with natively positioned savings */}
+            {/* Price Block */}
             <div className="flex-1 text-center md:text-left w-full">
               <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em] mb-3 font-bold">Official Pre-Order</p>
               <div className="flex items-center justify-center md:justify-start gap-4">
@@ -220,7 +241,7 @@ export default function Home() {
               )}
             </div>
 
-            {/* CTA Block (with inline Sponsor option) */}
+            {/* CTA Block */}
             <div className="flex-1 w-full md:w-auto flex flex-col gap-3">
               <button className={`w-full rounded-full bg-gold-500 text-book-900 font-bold py-4 lg:py-5 px-8 uppercase tracking-[0.2em] text-sm transition-all duration-300 hover:bg-gold-400 hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] active:scale-[0.98] ${focusRing}`}>
                 Secure Copy
@@ -228,7 +249,7 @@ export default function Home() {
               
               <button className="w-full flex items-center justify-center gap-2 text-gold-500/80 hover:text-gold-400 transition-colors text-[10px] sm:text-xs font-bold uppercase tracking-widest py-2">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                  <path d="M9.375 3a1.875 1.875 0 0 0 0 3.75h1.875v4.5H3.375A1.875 1.875 0 0 1 1.5 9.375v-.75c0-1.036.84-1.875 1.875-1.875h3.193A3.375 3.375 0 0 1 12 2.753a3.375 3.375 0 0 1 5.432 3.997h3.193c1.035 0 1.875.84 1.875 1.875v.75c0 1.036-.84 1.875-1.875 1.875H12.75v-4.5h1.875a1.875 1.875 0 1 0-1.875-1.875V6.75h-1.5V4.875C11.25 3.839 10.41 3 9.375 3ZM11.25 12.75H3v6.75a2.25 2.25 0 0 0 2.25 2.25h6v-9ZM12.75 12.75v9h6a2.25 2.25 0 0 0 2.25-2.25v-6.75h-8.25Z" />
+                  <path d="M12 3c-1.2 0-2.4.4-3.3 1.1-.9-.7-2.1-1.1-3.3-1.1-2.6 0-4.7 2.1-4.7 4.7 0 3.2 2.9 5.8 7.3 9.7l.7.6.7-.6c4.4-3.9 7.3-6.5 7.3-9.7 0-2.6-2.1-4.7-4.7-4.7z" />
                 </svg>
                 Sponsor Copies Instead
               </button>
@@ -238,7 +259,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* 2. HIGHLIGHTS STRIP */}
+      {/* 2. REFINED HIGHLIGHTS STRIP */}
       <motion.section
         initial="hidden"
         whileInView="visible"
@@ -246,26 +267,39 @@ export default function Home() {
         variants={staggerContainer}
         className="relative px-6 lg:px-24 max-w-7xl mx-auto pt-8 pb-12 lg:pb-16"
       >
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-gold-500/10 border border-gold-500/10 rounded-2xl overflow-hidden">
-          <motion.div variants={revealUp} className="bg-book-900/80 backdrop-blur-sm p-6 sm:p-8 flex flex-col items-center text-center gap-4">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" className="w-6 h-6 text-gold-500">
-              <path strokeLinecap="round" d="M6 17V9M12 17V5M18 17v-5" />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-gold-500/20 border border-gold-500/20 rounded-2xl overflow-hidden">
+          
+          {/* Highlight 1 */}
+          <motion.div variants={revealUp} className="group bg-book-900/90 backdrop-blur-md p-8 flex flex-col items-center text-center gap-3 hover:bg-book-800/90 transition-colors duration-500 cursor-default">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-8 h-8 text-gold-500 mb-2 group-hover:scale-110 transition-transform duration-500">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.474 5.408l2.118 2.117m-.756-3.982L12.171 9.214a1.875 1.875 0 00-.54 1.144L11.5 13.5l3.142-.131a1.875 1.875 0 001.144-.54l5.67-5.67a1.875 1.875 0 000-2.651l-1.5-1.5a1.875 1.875 0 00-2.65 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 7.125L22.5 10m-3-2.875l-2.118-2.117M3 21l4.5-4.5" />
             </svg>
-            <p className="text-gray-300 text-xs sm:text-sm uppercase tracking-[0.15em] leading-relaxed font-serif">Classical Arabic Meter</p>
+            <span className="text-gold-500/30 text-2xl font-serif leading-none" dir="rtl" style={{ fontFamily: "'Amiri', 'Uthmani', serif" }}>العروض</span>
+            <p className="text-gray-200 text-sm uppercase tracking-[0.15em] font-bold">Classical Meter</p>
+            <p className="text-gray-400 text-[11px] leading-relaxed">Composed strictly upon the traditional rules of Arabic Arud and Qawafi.</p>
           </motion.div>
-          <motion.div variants={revealUp} className="bg-book-900/80 backdrop-blur-sm p-6 sm:p-8 flex flex-col items-center text-center gap-4">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" className="w-6 h-6 text-gold-500">
-              <circle cx="12" cy="12" r="8.25" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8.5 12.5l2.5 2.5 4.5-5" />
+
+          {/* Highlight 2 */}
+          <motion.div variants={revealUp} className="group bg-book-900/90 backdrop-blur-md p-8 flex flex-col items-center text-center gap-3 hover:bg-book-800/90 transition-colors duration-500 cursor-default">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-8 h-8 text-gold-500 mb-2 group-hover:scale-110 transition-transform duration-500">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
             </svg>
-            <p className="text-gray-300 text-xs sm:text-sm uppercase tracking-[0.15em] leading-relaxed font-serif">Vetted by Scholars</p>
+            <span className="text-gold-500/30 text-2xl font-serif leading-none" dir="rtl" style={{ fontFamily: "'Amiri', 'Uthmani', serif" }}>إجازة</span>
+            <p className="text-gray-200 text-sm uppercase tracking-[0.15em] font-bold">Vetted by Scholars</p>
+            <p className="text-gray-400 text-[11px] leading-relaxed">Reviewed by people of knowledge for accuracy in language and pure Islamic meaning.</p>
           </motion.div>
-          <motion.div variants={revealUp} className="bg-book-900/80 backdrop-blur-sm p-6 sm:p-8 flex flex-col items-center text-center gap-4">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" className="w-6 h-6 text-gold-500">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 3L19 6L19 12C19 16.5 16 19.5 12 21C8 19.5 5 16.5 5 12L5 6Z" />
+
+          {/* Highlight 3 */}
+          <motion.div variants={revealUp} className="group bg-book-900/90 backdrop-blur-md p-8 flex flex-col items-center text-center gap-3 hover:bg-book-800/90 transition-colors duration-500 cursor-default">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-8 h-8 text-gold-500 mb-2 group-hover:scale-110 transition-transform duration-500">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
             </svg>
-            <p className="text-gray-300 text-xs sm:text-sm uppercase tracking-[0.15em] leading-relaxed font-serif">Islamic Heritage</p>
+            <span className="text-gold-500/30 text-2xl font-serif leading-none" dir="rtl" style={{ fontFamily: "'Amiri', 'Uthmani', serif" }}>تراث</span>
+            <p className="text-gray-200 text-sm uppercase tracking-[0.15em] font-bold">Islamic Heritage</p>
+            <p className="text-gray-400 text-[11px] leading-relaxed">A modern contribution to the rich, enduring legacy of classical Islamic literature.</p>
           </motion.div>
+
         </div>
       </motion.section>
 
@@ -280,9 +314,9 @@ export default function Home() {
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light text-white leading-tight mb-8 font-serif">
               A beautifully preserved volume dedicated to <span className="text-gold-400 italic">deep wisdom</span>, noble Islamic morals, and the love for the Prophet.
             </h2>
-            <div className="space-y-6 text-gray-400 text-sm sm:text-base lg:text-lg font-light leading-relaxed max-w-2xl font-serif">
+            <div className="space-y-6 text-gray-300 text-sm sm:text-base lg:text-lg font-light leading-relaxed max-w-2xl font-serif">
               <p>Gathering scattered poetic works into one beautifully preserved volume. Every poem within is written using traditional Arabic meter and rhyme to bring out the true, unadulterated beauty of the language.</p>
-              <p className="pl-6 border-l-2 border-gold-500/40 text-gray-300 font-serif italic">
+              <p className="pl-6 border-l-2 border-gold-500/40 text-[#E2DED0] font-serif italic">
                 Alhamdulillah... It was vetted by scholars for its rich vocabulary, sweet meaning, and excellent eloquence. Pre-order to support the preservation of our Islamic and poetic heritage.
               </p>
             </div>
@@ -297,7 +331,7 @@ export default function Home() {
             <h2 className="text-2xl sm:text-3xl font-light text-white mb-2 font-serif">Yusuf Oyetunji</h2>
             <p className="text-gold-600 font-serif italic text-xl mb-8">Abu Hayyãn</p>
 
-            <div className="space-y-6 text-gray-400 text-sm sm:text-base font-light leading-relaxed font-serif">
+            <div className="space-y-6 text-gray-300 text-sm sm:text-base font-light leading-relaxed font-serif">
               <p>A dedicated writer, translator, and student of classical Arabic poetry. Graduate of the Institute of Islamic Sciences and Studies in Amuloko, Ibadan, Nigeria.</p>
               <p>Holding both a Bachelor of Arts and a Master of Arts in English from the University of Ibadan, currently furthering studies at Kuliyyah Imam Malik in Jegede, Ibadan.</p>
               <p>Passionate about sharing beneficial knowledge and preserving Islamic literary heritage, this debut collection reflects an extensive literary background and a deep, enduring love for classical Arabic poetry.</p>
