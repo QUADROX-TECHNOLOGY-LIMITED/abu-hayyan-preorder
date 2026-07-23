@@ -60,10 +60,25 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-book-900 selection:bg-gold-500 selection:text-book-900 relative overflow-hidden font-sans">
 
-      {/* FULL SCREEN LOADING OVERLAY */}
+      {/* FULL SCREEN LOADING OVERLAY - Engaging Typographic Animation */}
       <div className={`fixed inset-0 z-[100] bg-book-900 flex flex-col items-center justify-center transition-opacity duration-1000 ${modelLoaded ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-        <div className="w-16 h-16 border-2 border-gold-500/20 border-t-gold-500 rounded-full animate-spin mb-6" />
-        <p className="text-gold-500 tracking-[0.4em] uppercase text-xs font-bold animate-pulse">Loading Experience</p>
+        <div className="relative flex flex-col items-center justify-center h-40 w-full max-w-sm overflow-hidden">
+          <motion.div
+            animate={{ x: [-30, 30, -30] }}
+            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+            className="text-gold-500/80 text-3xl sm:text-4xl font-serif mb-4"
+          >
+            Abu Hayyãn
+          </motion.div>
+          <motion.div
+            animate={{ x: [30, -30, 30] }}
+            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+            className="text-white/80 text-4xl sm:text-5xl font-serif"
+            dir="rtl"
+          >
+            أبي حيان
+          </motion.div>
+        </div>
       </div>
 
       {/* Ambient Luxury Lighting */}
@@ -90,37 +105,39 @@ export default function Home() {
         </div>
       </motion.header>
 
-      {/* FLOATING SPONSOR SEAL (ANIMATED PILL) */}
+      {/* FLOATING SPONSOR SEAL (Hidden on Mobile to prevent conflict) */}
       <motion.button
         animate={shouldReduceMotion ? {} : { y: [0, -8, 0], rotate: [0, -2, 2, -2, 0] }}
         transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-        className={`fixed bottom-24 lg:bottom-8 right-6 lg:right-12 z-50 bg-gradient-to-r from-gold-400 to-gold-600 text-book-900 px-5 py-3 rounded-full shadow-[0_10px_30px_rgba(212,175,55,0.4)] hover:scale-105 transition-transform flex items-center gap-3 group ${focusRing}`}
+        className={`hidden lg:flex fixed bottom-8 right-12 z-50 bg-gradient-to-r from-gold-400 to-gold-600 text-book-900 px-5 py-3 rounded-full shadow-[0_10px_30px_rgba(212,175,55,0.4)] hover:scale-105 transition-transform items-center gap-3 group ${focusRing}`}
         aria-label="Sponsor copies for others"
       >
-        {/* Gift Icon */}
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 lg:w-6 lg:h-6 animate-pulse">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 animate-pulse">
           <path d="M9.375 3a1.875 1.875 0 0 0 0 3.75h1.875v4.5H3.375A1.875 1.875 0 0 1 1.5 9.375v-.75c0-1.036.84-1.875 1.875-1.875h3.193A3.375 3.375 0 0 1 12 2.753a3.375 3.375 0 0 1 5.432 3.997h3.193c1.035 0 1.875.84 1.875 1.875v.75c0 1.036-.84 1.875-1.875 1.875H12.75v-4.5h1.875a1.875 1.875 0 1 0-1.875-1.875V6.75h-1.5V4.875C11.25 3.839 10.41 3 9.375 3ZM11.25 12.75H3v6.75a2.25 2.25 0 0 0 2.25 2.25h6v-9ZM12.75 12.75v9h6a2.25 2.25 0 0 0 2.25-2.25v-6.75h-8.25Z" />
         </svg>
-        <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest whitespace-nowrap">
+        <span className="text-xs font-black uppercase tracking-widest whitespace-nowrap">
           Sponsor Copies
         </span>
       </motion.button>
 
       {/* MOBILE STICKY CTA BAR */}
-      <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden bg-book-900/95 backdrop-blur-lg border-t border-gold-500/20 px-4 py-3 flex items-center justify-between gap-4">
-        <div>
-          <p className="text-gold-500 font-black text-lg leading-none">₦2,500</p>
-          <p className="text-gray-500 text-[10px] uppercase tracking-wider mt-0.5">Pre-Order Price</p>
+      <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden bg-book-900/95 backdrop-blur-lg border-t border-gold-500/20 px-5 py-4 flex items-center justify-between gap-4">
+        <div className="flex flex-col justify-center">
+          <div className="flex items-center gap-2">
+            <p className="text-gold-500 font-black text-xl leading-none">₦2,500</p>
+            <span className="text-[8px] font-bold uppercase tracking-wider text-book-900 bg-gold-500 px-1.5 py-0.5 rounded-sm">Save ₦500</span>
+          </div>
+          <p className="text-gray-500 text-[10px] uppercase tracking-wider mt-1.5">Official Pre-Order</p>
         </div>
         <button
           onClick={scrollToPreorder}
-          className={`flex-1 max-w-[200px] rounded-full bg-gold-500 text-book-900 font-bold py-3 px-6 uppercase tracking-[0.15em] text-xs ${focusRing}`}
+          className={`flex-1 max-w-[170px] rounded-full bg-gold-500 text-book-900 font-bold py-3.5 px-4 uppercase tracking-[0.1em] text-xs ${focusRing}`}
         >
           Secure Copy
         </button>
       </div>
 
-      {/* 1. CINEMATIC HERO SECTION (Tighter Padding) */}
+      {/* 1. CINEMATIC HERO SECTION */}
       <section className="relative min-h-[90svh] flex flex-col items-center justify-start pt-24 pb-16 lg:pb-12">
 
         {/* Background Typography Watermark */}
@@ -136,10 +153,13 @@ export default function Home() {
           </h1>
         </div>
 
-        {/* Small Intro Badge */}
-        <motion.div initial="hidden" animate="visible" variants={revealUp} className="z-10 mt-2 lg:mt-6 flex flex-col items-center gap-3 text-center">
-          <p className="text-gold-500 uppercase tracking-[0.4em] text-[10px] lg:text-xs font-bold">The Debut Collection</p>
-          <p className="text-gray-400 text-xs sm:text-sm font-serif italic tracking-wide">A Diwan of Classical Arabic Poetry</p>
+        {/* Official Book Title Intro */}
+        <motion.div initial="hidden" animate="visible" variants={revealUp} className="z-10 mt-6 lg:mt-10 flex flex-col items-center gap-4 text-center px-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-gold-500 drop-shadow-md" dir="rtl">الجمان من بدائع أبي حيان</h2>
+          <div className="flex flex-col items-center">
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-serif text-white uppercase tracking-[0.15em] leading-none drop-shadow-lg">Pearls</h1>
+            <p className="text-gray-300 text-[10px] sm:text-xs lg:text-sm uppercase tracking-[0.3em] font-light mt-3 text-center max-w-[80vw]">From the Masterpieces of Abu Hayyan</p>
+          </div>
         </motion.div>
 
         {/* Massive Centered 3D Book */}
@@ -147,12 +167,12 @@ export default function Home() {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.5, ease: "easeOut" }}
-          className="relative z-10 w-full max-w-5xl h-[50vh] sm:h-[58vh] lg:h-[68vh] mt-4 cursor-grab active:cursor-grabbing"
+          className="relative z-10 w-full max-w-5xl h-[45vh] sm:h-[55vh] lg:h-[60vh] mt-4 lg:mt-8 cursor-grab active:cursor-grabbing"
         >
           <Book3DModel onLoaded={() => setModelLoaded(true)} />
         </motion.div>
 
-        {/* Purchase Card (Tighter Margins) */}
+        {/* Purchase Card */}
         <motion.div
           id="preorder"
           initial={{ opacity: 0, y: 40 }}
@@ -160,62 +180,65 @@ export default function Home() {
           transition={{ duration: 1, delay: 0.5 }}
           className="relative z-20 -mt-10 sm:-mt-16 lg:-mt-20 w-[92%] max-w-4xl mx-auto scroll-mt-24"
         >
-          <div className="bg-book-800/60 backdrop-blur-2xl border border-gold-500/20 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] rounded-3xl overflow-hidden">
+          <div className="bg-book-800/60 backdrop-blur-2xl border border-gold-500/20 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] rounded-3xl overflow-hidden p-6 sm:p-8 lg:p-10 flex flex-col md:flex-row items-center justify-between gap-8">
 
-            {/* Savings ribbon */}
-            <div className="flex items-center justify-center gap-2 border-b border-gold-500/10 py-3 bg-gold-500/[0.05]">
-              <span className="w-1.5 h-1.5 rounded-full bg-gold-500 animate-pulse" />
-              <p className="text-gold-400 text-[10px] sm:text-xs uppercase tracking-[0.25em] font-bold">Save ₦500 on the Official Pre-Order Price</p>
-              <span className="w-1.5 h-1.5 rounded-full bg-gold-500 animate-pulse" />
-            </div>
-
-            <div className="p-6 sm:p-8 lg:p-10 flex flex-col md:flex-row items-center justify-between gap-8">
-
-              {/* Price Block */}
-              <div className="flex-1 text-center md:text-left">
-                <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em] mb-2 font-bold">Official Pre-Order</p>
-                <div className="flex items-end justify-center md:justify-start gap-4">
-                  <span className="text-4xl lg:text-5xl font-black text-gold-500 leading-none">₦2,500</span>
-                  <span className="relative inline-block text-lg lg:text-xl text-gray-500 font-bold leading-none pb-1">
-                    <span className="absolute top-1/2 left-[-10%] w-[120%] h-[2px] bg-red-600 -rotate-12 shadow-[0_0_8px_rgba(220,38,38,0.8)]" />
+            {/* Price Block with natively positioned savings */}
+            <div className="flex-1 text-center md:text-left w-full">
+              <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em] mb-3 font-bold">Official Pre-Order</p>
+              <div className="flex items-center justify-center md:justify-start gap-4">
+                <span className="text-4xl lg:text-5xl font-black text-gold-500 leading-none">₦2,500</span>
+                <div className="flex flex-col items-start gap-1.5">
+                  <span className="relative inline-block text-sm lg:text-base text-gray-500 font-bold leading-none">
+                    <span className="absolute top-1/2 left-[-10%] w-[120%] h-[1.5px] bg-red-500 -rotate-12" />
                     ₦3,000
+                  </span>
+                  <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-book-900 bg-gold-500 px-2 py-0.5 rounded-sm">
+                    Save ₦500
                   </span>
                 </div>
               </div>
-
-              {/* Vertical Divider (Desktop) */}
-              <div className="hidden md:block w-px h-16 bg-gold-500/20" />
-
-              {/* Countdown Block */}
-              <div className="flex-1 text-center">
-                <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em] mb-3 font-bold">Pre-Order Closes In</p>
-                {isMounted ? (
-                  <div className="flex items-center justify-center gap-3 lg:gap-5 text-white font-mono text-xl lg:text-2xl">
-                    <div className="flex flex-col items-center"><span className="font-light">{timeLeft.days}</span><span className="text-[9px] text-gold-500/80 mt-1 font-sans">DAYS</span></div>
-                    <span className="text-gold-500/30 pb-3">:</span>
-                    <div className="flex flex-col items-center"><span className="font-light">{timeLeft.hours}</span><span className="text-[9px] text-gold-500/80 mt-1 font-sans">HRS</span></div>
-                    <span className="text-gold-500/30 pb-3">:</span>
-                    <div className="flex flex-col items-center"><span className="font-light">{timeLeft.minutes}</span><span className="text-[9px] text-gold-500/80 mt-1 font-sans">MIN</span></div>
-                    <span className="text-gold-500/30 pb-3">:</span>
-                    <div className="flex flex-col items-center"><span className="font-light">{timeLeft.seconds}</span><span className="text-[9px] text-gold-500/80 mt-1 font-sans">SEC</span></div>
-                  </div>
-                ) : (
-                  <div className="h-10 w-48 bg-white/5 animate-pulse mx-auto rounded-full" />
-                )}
-              </div>
-
-              {/* CTA Block */}
-              <div className="flex-1 w-full md:w-auto">
-                <button className={`w-full rounded-full bg-gold-500 text-book-900 font-bold py-5 px-8 uppercase tracking-[0.2em] text-sm transition-all duration-300 hover:bg-gold-400 hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] active:scale-[0.98] ${focusRing}`}>
-                  Secure Copy
-                </button>
-              </div>
             </div>
+
+            {/* Vertical Divider (Desktop) */}
+            <div className="hidden md:block w-px h-20 bg-gold-500/20" />
+
+            {/* Countdown Block */}
+            <div className="flex-1 text-center w-full">
+              <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em] mb-4 font-bold">Pre-Order Closes In</p>
+              {isMounted ? (
+                <div className="flex items-center justify-center gap-3 lg:gap-5 text-white font-mono text-2xl lg:text-3xl">
+                  <div className="flex flex-col items-center"><span className="font-light">{timeLeft.days}</span><span className="text-[9px] text-gold-500/80 mt-1 font-sans">DAYS</span></div>
+                  <span className="text-gold-500/30 pb-3">:</span>
+                  <div className="flex flex-col items-center"><span className="font-light">{timeLeft.hours}</span><span className="text-[9px] text-gold-500/80 mt-1 font-sans">HRS</span></div>
+                  <span className="text-gold-500/30 pb-3">:</span>
+                  <div className="flex flex-col items-center"><span className="font-light">{timeLeft.minutes}</span><span className="text-[9px] text-gold-500/80 mt-1 font-sans">MIN</span></div>
+                  <span className="text-gold-500/30 pb-3">:</span>
+                  <div className="flex flex-col items-center"><span className="font-light">{timeLeft.seconds}</span><span className="text-[9px] text-gold-500/80 mt-1 font-sans">SEC</span></div>
+                </div>
+              ) : (
+                <div className="h-10 w-48 bg-white/5 animate-pulse mx-auto rounded-full" />
+              )}
+            </div>
+
+            {/* CTA Block (with inline Sponsor option) */}
+            <div className="flex-1 w-full md:w-auto flex flex-col gap-3">
+              <button className={`w-full rounded-full bg-gold-500 text-book-900 font-bold py-4 lg:py-5 px-8 uppercase tracking-[0.2em] text-sm transition-all duration-300 hover:bg-gold-400 hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] active:scale-[0.98] ${focusRing}`}>
+                Secure Copy
+              </button>
+              
+              <button className="w-full flex items-center justify-center gap-2 text-gold-500/80 hover:text-gold-400 transition-colors text-[10px] sm:text-xs font-bold uppercase tracking-widest py-2">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                  <path d="M9.375 3a1.875 1.875 0 0 0 0 3.75h1.875v4.5H3.375A1.875 1.875 0 0 1 1.5 9.375v-.75c0-1.036.84-1.875 1.875-1.875h3.193A3.375 3.375 0 0 1 12 2.753a3.375 3.375 0 0 1 5.432 3.997h3.193c1.035 0 1.875.84 1.875 1.875v.75c0 1.036-.84 1.875-1.875 1.875H12.75v-4.5h1.875a1.875 1.875 0 1 0-1.875-1.875V6.75h-1.5V4.875C11.25 3.839 10.41 3 9.375 3ZM11.25 12.75H3v6.75a2.25 2.25 0 0 0 2.25 2.25h6v-9ZM12.75 12.75v9h6a2.25 2.25 0 0 0 2.25-2.25v-6.75h-8.25Z" />
+                </svg>
+                Sponsor Copies Instead
+              </button>
+            </div>
+            
           </div>
         </motion.div>
       </section>
 
-      {/* 2. HIGHLIGHTS STRIP (Tighter Padding) */}
+      {/* 2. HIGHLIGHTS STRIP */}
       <motion.section
         initial="hidden"
         whileInView="visible"
@@ -246,7 +269,7 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* 3. ASYMMETRICAL EDITORIAL LAYOUT (Tightened up) */}
+      {/* 3. ASYMMETRICAL EDITORIAL LAYOUT */}
       <section className="relative px-6 lg:px-24 max-w-7xl mx-auto pb-16 lg:pb-24">
 
         {/* The Masterpiece (Wide Focus) */}
@@ -271,7 +294,7 @@ export default function Home() {
           <div className="absolute right-0 top-0 w-[2px] h-24 bg-gradient-to-b from-gold-500 to-transparent md:hidden rounded-full" />
           <div className="pr-8 lg:pr-0 md:pl-16 lg:pl-32 md:border-l-2 border-gold-500/20 md:w-3/4 lg:w-1/2">
             <h3 className="text-xs font-bold text-gold-500 uppercase tracking-[0.3em] mb-6">02 — The Author</h3>
-            <h2 className="text-2xl sm:text-3xl font-light text-white mb-2 font-serif">Yusuf Olalekan Oyetunji</h2>
+            <h2 className="text-2xl sm:text-3xl font-light text-white mb-2 font-serif">Yusuf Oyetunji</h2>
             <p className="text-gold-600 font-serif italic text-xl mb-8">Abu Hayyãn</p>
 
             <div className="space-y-6 text-gray-400 text-sm sm:text-base font-light leading-relaxed font-serif">
@@ -292,7 +315,7 @@ export default function Home() {
 
       </section>
 
-      {/* 4. FINAL CTA (Tighter Padding) */}
+      {/* 4. FINAL CTA */}
       <motion.section
         initial="hidden"
         whileInView="visible"
