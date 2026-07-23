@@ -79,12 +79,14 @@ export default function CheckoutModal({ mode, onClose }: { mode: ModalMode; onCl
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const [formData, setFormData] = useState({
-    name: '', email: '', whatsapp: '', quantity: 1,
+    name: '', email: '', whatsapp: '', quantity: 1 as number | string,
     deliveryMode: 'launch_pickup', state: '', city: '', address: '', nearestPark: ''
   });
 
+  const parsedQuantity = parseInt(formData.quantity as string, 10);
+  const safeQuantity = isNaN(parsedQuantity) ? 1 : parsedQuantity;
   const basePrice = 2500;
-  const totalAmount = formData.quantity * basePrice; 
+  const totalAmount = safeQuantity * basePrice; 
 
   const availableStates = Object.keys(nigeriaStates);
   const availableCities = formData.state ? nigeriaStates[formData.state] || [] : [];
@@ -93,8 +95,8 @@ export default function CheckoutModal({ mode, onClose }: { mode: ModalMode; onCl
   const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
   const isValidPhone = /^\d{11}$/.test(formData.whatsapp);
   
-  const isPreorderStep1Valid = formData.name.trim() !== '' && isValidEmail && isValidPhone && formData.quantity > 0;
-  const isSponsorStep1Valid = isValidEmail && formData.quantity > 0;
+  const isPreorderStep1Valid = formData.name.trim() !== '' && isValidEmail && isValidPhone && safeQuantity > 0 && formData.quantity !== '';
+  const isSponsorStep1Valid = isValidEmail && safeQuantity > 0 && formData.quantity !== '';
 
   const handlePhoneInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.replace(/\D/g, '').slice(0, 11);
@@ -119,7 +121,7 @@ export default function CheckoutModal({ mode, onClose }: { mode: ModalMode; onCl
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, mode, totalAmount })
+        body: JSON.stringify({ ...formData, quantity: safeQuantity, mode, totalAmount })
       });
       const data = await res.json();
       
@@ -234,7 +236,25 @@ export default function CheckoutModal({ mode, onClose }: { mode: ModalMode; onCl
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
                   <div>
                     <label className="block text-xs font-black text-stone-900 uppercase tracking-widest mb-2">Quantity (₦2,500 each)</label>
-                    <input type="number" min="1" value={formData.quantity} className={inputStyle} onChange={(e) => setFormData({...formData, quantity: parseInt(e.target.value) || 1})} />
+                    <input 
+                      type="number" 
+                      min="1" 
+                      value={formData.quantity} 
+                      className={inputStyle} 
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === '') {
+                          setFormData({...formData, quantity: ''});
+                        } else {
+                          setFormData({...formData, quantity: parseInt(val, 10)});
+                        }
+                      }}
+                      onBlur={() => {
+                        if (formData.quantity === '' || Number(formData.quantity) < 1) {
+                          setFormData({...formData, quantity: 1});
+                        }
+                      }}
+                    />
                   </div>
                   <div>
                     <label className="block text-xs font-black text-stone-900 uppercase tracking-widest mb-2">Email Address <span className="text-red-500">*</span></label>
@@ -282,7 +302,25 @@ export default function CheckoutModal({ mode, onClose }: { mode: ModalMode; onCl
                   </div>
                   <div>
                     <label className="block text-xs font-black text-stone-900 uppercase tracking-widest mb-2">Quantity (₦2,500 each)</label>
-                    <input type="number" min="1" value={formData.quantity} className={inputStyle} onChange={(e) => setFormData({...formData, quantity: parseInt(e.target.value) || 1})} />
+                    <input 
+                      type="number" 
+                      min="1" 
+                      value={formData.quantity} 
+                      className={inputStyle} 
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === '') {
+                          setFormData({...formData, quantity: ''});
+                        } else {
+                          setFormData({...formData, quantity: parseInt(val, 10)});
+                        }
+                      }}
+                      onBlur={() => {
+                        if (formData.quantity === '' || Number(formData.quantity) < 1) {
+                          setFormData({...formData, quantity: 1});
+                        }
+                      }}
+                    />
                   </div>
                   <button onClick={() => setStep(2)} disabled={!isPreorderStep1Valid} className="w-full bg-stone-900 text-white font-bold py-4 rounded-full uppercase tracking-[0.15em] text-sm hover:bg-amber-500 hover:text-stone-900 transition-colors mt-4 shadow-lg shadow-stone-900/20 disabled:opacity-40 disabled:hover:bg-stone-900 disabled:hover:text-white">
                     Continue to Delivery
@@ -305,11 +343,11 @@ export default function CheckoutModal({ mode, onClose }: { mode: ModalMode; onCl
                     />
                     {formData.deliveryMode === 'launch_pickup' ? (
                       <p className="text-[10px] text-amber-600 font-bold mt-2 bg-amber-50 p-2 rounded-md border border-amber-100 uppercase tracking-wider">
-                        *If you don't show up for pickup, the delivery fee is on you ooo.
+                        * Please note: If you are later unable to attend the launch ceremony, home delivery will incur an additional fee based on your location.
                       </p>
                     ) : (
                       <p className="text-[10px] text-amber-600 font-bold mt-2 bg-amber-50 p-2 rounded-md border border-amber-100 uppercase tracking-wider">
-                        *Delivery fee is on you ooo.
+                        * Please note: Home delivery incurs an additional fee, which will be communicated to you based on your specific location.
                       </p>
                     )}
                   </div>
