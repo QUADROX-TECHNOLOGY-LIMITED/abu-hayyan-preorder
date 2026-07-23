@@ -87,7 +87,7 @@ export async function sendReceiptEmail(
         'Authorization': `Zoho-enczapikey ${process.env.ZEPTOMAIL_API_KEY}`
       },
       body: JSON.stringify({
-        bounce_address: "bounce@bounce-zem.quadroxtech.cloud // Adjust prefix if your bounce setup requires a specific alias
+        bounce_address: "bounce@bounce-zem.quadroxtech.cloud",
         from: {
           address: "dev@quadroxtech.cloud",
           name: "Quadrox For Abu Hayyan Schools"
