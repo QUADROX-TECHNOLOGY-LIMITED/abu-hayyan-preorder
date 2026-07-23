@@ -6,14 +6,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        navy: {
-          900: '#060B19', 
-          800: '#0F172A',
-          700: '#1E293B',
+        book: {
+          900: '#140b08', // Deepest background brown
+          800: '#2a1b15', // Lighter brown for cards
+          700: '#3e2a21', // Border brown
         },
-        amber: {
-          400: '#FFBF00', 
-          500: '#D4AF37', 
+        gold: {
+          400: '#f9f295', // Highlight gold
+          500: '#d4af37', // Base premium gold
+          600: '#b8860b', // Deep bronze/gold
         }
       },
       backgroundImage: {

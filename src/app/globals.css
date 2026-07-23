@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --background: #060B19;
-  --foreground: #F8FAFC;
+  --background: #140b08;
+  --foreground: #fcf8f2;
 }
 
 body {
@@ -14,8 +14,8 @@ body {
   overflow-x: hidden;
 }
 
-.amber-gradient-text {
-  background: linear-gradient(to right, #FDE68A, #FFBF00, #D4AF37);
+.gold-gradient-text {
+  background: linear-gradient(to right, #f9f295, #d4af37, #b8860b);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
