@@ -5,6 +5,21 @@ import Redis from 'ioredis';
 const prisma = new PrismaClient();
 const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
 
+// Flutterwave local NGN fee: 2% (capped at ₦2,000)
+function calculateGrossAmount(netAmount: number): number {
+  const feePercentage = 0.02; // 2%
+  let gross = netAmount / (1 - feePercentage);
+  let fee = gross - netAmount;
+  
+  if (fee > 2000) {
+    gross = netAmount + 2000;
+  }
+  
+  // We use Math.ceil to round up to the nearest whole Naira 
+  // so you don't lose a single kobo to fractional differences.
+  return Math.ceil(gross); 
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -19,10 +34,14 @@ export async function POST(req: Request) {
     }
 
     const basePrice = 2500;
-    const totalAmount = quantity * basePrice;
+    const safeQuantity = Number(quantity) || 1;
+    const netAmount = safeQuantity * basePrice;
+    
+    // 1. Calculate the total amount with Flutterwave's 2% fee seamlessly included
+    const totalAmount = calculateGrossAmount(netAmount); 
     const orderId = String(Math.floor(100000 + Math.random() * 900000));
 
-    // Force Wema Bank via bank_code: "035"
+    // 2. Force Wema Bank via bank_code: "035" and pass the marked-up total
     const flwResponse = await fetch('https://api.flutterwave.com/v3/virtual-account-numbers', {
       method: 'POST',
       headers: {
@@ -33,8 +52,8 @@ export async function POST(req: Request) {
         email: email || 'anonymous@abu-hayyan.com',
         is_permanent: false,
         tx_ref: orderId, 
-        amount: totalAmount,
-        bank_code: "035" // <-- Forces Wema Bank (Universally Supported)
+        amount: totalAmount, // E.g., tells the customer to transfer ₦2,552
+        bank_code: "035"
       })
     });
 
@@ -50,7 +69,7 @@ export async function POST(req: Request) {
         data: {
           orderNumber: orderId,
           name: name || 'Guest',
-          email, whatsapp, quantity, totalAmount, deliveryMode, state, city, address, nearestPark,
+          email, whatsapp, quantity: safeQuantity, totalAmount, deliveryMode, state, city, address, nearestPark,
           paymentStatus: 'PENDING',
           dvaReference: flwData.data.order_ref,
           dvaAccountNumber: flwData.data.account_number,
@@ -62,7 +81,7 @@ export async function POST(req: Request) {
         data: {
           orderNumber: orderId,
           name: name || 'Anonymous',
-          email, quantity, totalAmount,
+          email, quantity: safeQuantity, totalAmount,
           paymentStatus: 'PENDING',
           dvaReference: flwData.data.order_ref,
           dvaAccountNumber: flwData.data.account_number,
