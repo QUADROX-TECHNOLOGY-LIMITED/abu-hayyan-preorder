@@ -86,7 +86,18 @@ export default function CheckoutModal({ mode, onClose }: { mode: ModalMode; onCl
   const parsedQuantity = parseInt(formData.quantity as string, 10);
   const safeQuantity = isNaN(parsedQuantity) ? 1 : parsedQuantity;
   const basePrice = 2500;
-  const totalAmount = safeQuantity * basePrice; 
+  const netAmount = safeQuantity * basePrice; 
+
+  // Accurately calculate the 2% Flutterwave fee on the frontend
+  const calculateGrossAmount = (net: number) => {
+    const feePercentage = 0.02;
+    let gross = net / (1 - feePercentage);
+    let fee = gross - net;
+    if (fee > 2000) gross = net + 2000;
+    return Math.ceil(gross);
+  };
+
+  const totalAmount = calculateGrossAmount(netAmount); 
 
   const availableStates = Object.keys(nigeriaStates);
   const availableCities = formData.state ? nigeriaStates[formData.state] || [] : [];
@@ -235,7 +246,7 @@ export default function CheckoutModal({ mode, onClose }: { mode: ModalMode; onCl
               {mode === 'sponsor' && step === 1 && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
                   <div>
-                    <label className="block text-xs font-black text-stone-900 uppercase tracking-widest mb-2">Quantity (₦2,500 each)</label>
+                    <label className="block text-xs font-black text-stone-900 uppercase tracking-widest mb-2">Quantity (₦2,500 each + 2% processing fee)</label>
                     <input 
                       type="number" 
                       min="1" 
@@ -301,7 +312,7 @@ export default function CheckoutModal({ mode, onClose }: { mode: ModalMode; onCl
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-black text-stone-900 uppercase tracking-widest mb-2">Quantity (₦2,500 each)</label>
+                    <label className="block text-xs font-black text-stone-900 uppercase tracking-widest mb-2">Quantity (₦2,500 each + 2% processing fee)</label>
                     <input 
                       type="number" 
                       min="1" 
