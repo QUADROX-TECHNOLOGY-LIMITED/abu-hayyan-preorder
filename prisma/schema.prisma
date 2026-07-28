@@ -16,6 +16,17 @@ model SiteConfig {
   updatedAt       DateTime @updatedAt
 }
 
+// Admin Account for Secure Dashboard Access
+model Admin {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  password       String   // Bcrypt hash
+  failedAttempts Int      @default(0)
+  isLocked       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
 // Core Order Logic mapping all required fields for strict delivery and tracking
 model Order {
   id               String    @id @default(cuid()) 
@@ -35,7 +46,8 @@ model Order {
   
   // Security & Payment Tracking
   paymentStatus    String    @default("PENDING") // PENDING, SUCCESS, FAILED
-  dvaReference     String?   @unique // Paystack Reference
+  deliveryStatus   String    @default("PENDING") // PENDING | DELIVERED
+  dvaReference     String?   @unique // Paystack/Flutterwave Reference
   dvaAccountNumber String?   
   dvaBankName      String?
   dvaExpiresAt     DateTime? 
@@ -47,9 +59,9 @@ model Order {
 // Isolated table for the Sponsorship workflow
 model Sponsor {
   id               String    @id @default(cuid())
-  orderNumber      String   // <-- ADD THIS LINE
+  orderNumber      String    @unique
   name             String?   // Nullable for anonymous sponsors
-  email            String   // <-- ADD THIS LINE
+  email            String   
   quantity         Int
   totalAmount      Int
   
