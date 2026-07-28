@@ -1,0 +1,30 @@
+import { NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
+import { verifyJWT } from '@/lib/auth';
+import { cookies } from 'next/headers';
+
+const prisma = new PrismaClient();
+
+async function checkAuth() {
+  const token = cookies().get('admin_session')?.value;
+  if (!token) return false;
+  return await verifyJWT(token);
+}
+
+export async function GET() {
+  if (!(await checkAuth())) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const sponsors = await prisma.sponsor.findMany({
+      where: { paymentStatus: 'SUCCESS' },
+      orderBy: { createdAt: 'desc' }
+    });
+    
+    return NextResponse.json({ status: 'success', data: sponsors });
+  } catch (error) {
+    console.error('Failed to fetch sponsors:', error);
+    return NextResponse.json({ status: 'error', message: 'Failed to fetch sponsors' }, { status: 500 });
+  }
+}
