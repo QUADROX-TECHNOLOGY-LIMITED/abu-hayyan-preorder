@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { motion, useReducedMotion } from 'framer-motion';
-import CheckoutModal from '@/components/CheckoutModal'; // <-- Imported Modal
+import CheckoutModal from '@/components/CheckoutModal';
 
 // The loading fallback
 const Book3DModel = dynamic(() => import('@/components/Book3DModel'), {
@@ -15,7 +15,7 @@ export default function Home() {
   const [modelLoaded, setModelLoaded] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [modalMode, setModalMode] = useState<'preorder' | 'sponsor' | null>(null); // <-- Added Modal State
+  const [modalMode, setModalMode] = useState<'preorder' | 'sponsor' | null>(null);
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
@@ -51,11 +51,6 @@ export default function Home() {
   const staggerContainer = {
     hidden: {},
     visible: { transition: { staggerChildren: 0.15 } }
-  };
-
-  // Kept just in case you still want to use it anywhere
-  const scrollToPreorder = () => {
-    document.getElementById('preorder')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
   const focusRing = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white';
@@ -99,7 +94,7 @@ export default function Home() {
             <span className="hidden sm:block text-stone-500 text-xs uppercase tracking-[0.3em] font-bold">Abu Hayyãn</span>
           </div>
           <button
-            onClick={() => setModalMode('preorder')} // <-- Trigger Modal
+            onClick={() => setModalMode('preorder')} 
             className={`text-[10px] sm:text-xs uppercase tracking-[0.2em] font-bold text-stone-900 border-2 border-stone-900 px-5 sm:px-6 py-2 rounded-full hover:bg-stone-900 hover:text-white transition-colors ${focusRing}`}
           >
             Pre-Order
@@ -109,7 +104,7 @@ export default function Home() {
 
       {/* FLOATING SPONSOR SEAL (Hidden on Mobile) */}
       <motion.button
-        onClick={() => setModalMode('sponsor')} // <-- Trigger Modal
+        onClick={() => setModalMode('sponsor')} 
         animate={shouldReduceMotion ? {} : { y: [0, -8, 0], rotate: [0, -2, 2, -2, 0] }}
         transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
         className={`hidden lg:flex fixed bottom-8 right-12 z-50 bg-stone-900 text-white px-5 py-3 rounded-full shadow-[0_15px_30px_rgba(0,0,0,0.2)] hover:scale-105 transition-transform items-center gap-3 group ${focusRing}`}
@@ -127,13 +122,13 @@ export default function Home() {
       <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden bg-white/95 backdrop-blur-lg border-t border-stone-200 px-5 py-4 flex items-center justify-between gap-4 shadow-[0_-10px_20px_rgba(0,0,0,0.05)]">
         <div className="flex flex-col justify-center">
           <div className="flex items-center gap-2">
-            <p className="text-stone-900 font-black text-xl leading-none">₦2,500</p>
+            <p className="text-stone-900 font-black text-xl leading-none">₦3,500</p>
             <span className="text-[8px] font-bold uppercase tracking-wider text-white bg-amber-600 px-1.5 py-0.5 rounded-sm">Save ₦500</span>
           </div>
           <p className="text-stone-500 text-[10px] uppercase tracking-wider mt-1.5 font-bold">Official Pre-Order</p>
         </div>
         <button
-          onClick={() => setModalMode('preorder')} // <-- Trigger Modal
+          onClick={() => setModalMode('preorder')} 
           className={`flex-1 max-w-[170px] rounded-full bg-stone-900 text-white font-bold py-3.5 px-4 uppercase tracking-[0.1em] text-xs shadow-lg shadow-stone-900/20 ${focusRing}`}
         >
           Secure Copy
@@ -188,11 +183,11 @@ export default function Home() {
             <div className="flex-1 text-center md:text-left w-full">
               <p className="text-[10px] text-stone-500 uppercase tracking-[0.2em] mb-3 font-bold">Official Pre-Order</p>
               <div className="flex items-center justify-center md:justify-start gap-4">
-                <span className="text-4xl lg:text-5xl font-black text-stone-900 leading-none">₦2,500</span>
+                <span className="text-4xl lg:text-5xl font-black text-stone-900 leading-none">₦3,500</span>
                 <div className="flex flex-col items-start gap-1.5">
                   <span className="relative inline-block text-sm lg:text-base text-stone-400 font-bold leading-none">
                     <span className="absolute top-1/2 left-[-10%] w-[120%] h-[2px] bg-red-500 -rotate-12" />
-                    ₦3,000
+                    ₦4,000
                   </span>
                   <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-white bg-amber-600 px-2 py-0.5 rounded-sm">Save ₦500</span>
                 </div>
@@ -221,7 +216,7 @@ export default function Home() {
             {/* CTA Block with Secondary Button */}
             <div className="flex-1 w-full md:w-auto flex flex-col gap-3">
               <button 
-                onClick={() => setModalMode('preorder')} // <-- Trigger Modal
+                onClick={() => setModalMode('preorder')} 
                 className={`w-full rounded-full bg-stone-900 text-white font-bold py-4 px-8 uppercase tracking-[0.15em] text-sm transition-all duration-300 hover:bg-amber-600 hover:shadow-[0_10px_25px_rgba(217,119,6,0.3)] active:scale-[0.98] ${focusRing}`}
               >
                 Get your copy
@@ -234,7 +229,7 @@ export default function Home() {
               </div>
 
               <button 
-                onClick={() => setModalMode('sponsor')} // <-- Trigger Modal
+                onClick={() => setModalMode('sponsor')} 
                 className={`w-full rounded-full bg-white border-2 border-stone-200 text-stone-700 font-bold py-3 px-6 uppercase tracking-[0.1em] text-[10px] sm:text-xs transition-all duration-300 hover:bg-stone-50 hover:border-amber-300 hover:text-stone-900 flex items-center justify-center gap-2 shadow-sm ${focusRing}`}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-amber-500">
@@ -374,10 +369,10 @@ export default function Home() {
           <p className="text-amber-600 uppercase tracking-[0.4em] text-[10px] lg:text-xs font-black">A Limited Allocation</p>
           <h2 className="text-3xl sm:text-4xl font-serif font-bold text-stone-900 leading-tight">Secure your copy of Abu Hayyãn's debut collection.</h2>
           <button
-            onClick={() => setModalMode('preorder')} // <-- Trigger Modal
+            onClick={() => setModalMode('preorder')} 
             className={`mt-6 rounded-full bg-stone-900 text-white font-bold py-5 px-12 uppercase tracking-[0.2em] text-sm hover:bg-amber-600 hover:shadow-[0_15px_30px_rgba(217,119,6,0.3)] transition-all duration-300 ${focusRing}`}
           >
-            Get your copy — ₦2,500
+            Get your copy — ₦3,500
           </button>
         </div>
       </motion.section>
