@@ -1,0 +1,39 @@
+import { NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+export async function POST(req: Request) {
+  try {
+    const { recoveryKey } = await req.json();
+    const expectedKey = process.env.ADMIN_RECOVERY_KEY;
+
+    if (!expectedKey) {
+      return NextResponse.json({
+        status: 'error',
+        message: 'ADMIN_RECOVERY_KEY is not set in environment variables.'
+      }, { status: 500 });
+    }
+
+    if (!recoveryKey || recoveryKey.trim() !== expectedKey.trim()) {
+      return NextResponse.json({ status: 'error', message: 'Invalid Emergency Recovery Key.' }, { status: 401 });
+    }
+
+    // Reset lock state and failed attempt counter across all admin accounts
+    await prisma.admin.updateMany({
+      data: {
+        isLocked: false,
+        failedAttempts: 0
+      }
+    });
+
+    return NextResponse.json({
+      status: 'success',
+      message: 'Account successfully unlocked! You can now log in.'
+    });
+
+  } catch (error) {
+    console.error('Admin Unlock Error:', error);
+    return NextResponse.json({ status: 'error', message: 'Internal Server Error' }, { status: 500 });
+  }
+}
